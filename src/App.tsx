@@ -3,6 +3,10 @@ import Encabezado from "./components/Encabezado";
 import { useState } from "react";
 import GestionCursos from "./components/Cursos/GestionCursos";
 import "./App.css";
+import GestionProfesores from "./components/Profesores/GestionProfesores";
+import GestionHorarios from "./components/Horarios/GestionHorarios";
+import GestionDeportistas from "./components/Deportistas/GestionDeportistas";
+import GestionUbicaciones from "./components/Ubicaciones/GestionUbicaciones";
 
 function App() {
   const [optionSelected, setOptionSelected] = useState({
@@ -14,9 +18,10 @@ function App() {
     { id: 0, name: "Inicio", page: "Inicio" },
     { id: 1, name: "Gestión de Cursos", page: "GestionCursos" },
     { id: 2, name: "Gestión de Profesores", page: "GestionProfesores" },
-    { id: 3, name: "Gestión de Grupos", page: "GestionGrupos" },
-    { id: 4, name: "Gestión Deportista", page: "Inscribir" },
-    { id: 5, name: "Agendar Clase", page: "Agendar" },
+    { id: 3, name: "Gestión de Ubicaciones", page: "GestionUbicaciones" },
+    { id: 4, name: "Gestión de Grupos", page: "GestionGrupos" },
+    { id: 5, name: "Gestión Deportista", page: "Inscribir" },
+    { id: 6, name: "Agendar Clase", page: "Agendar" },
   ];
 
   const handlerSelected = (element: {
@@ -40,6 +45,14 @@ function App() {
         <Encabezado onClick={handlerSelected} data={opcionesMenu} />
         {optionSelected.id === 1 ? (
           <GestionCursos titulo={optionSelected.name} />
+        ) : optionSelected.id === 2 ? (
+          <GestionProfesores titulo={optionSelected.name} />
+        ) : optionSelected.id === 3 ? (
+          <GestionUbicaciones titulo={optionSelected.name} />
+        ) : optionSelected.id === 4 ? (
+          <GestionHorarios titulo={optionSelected.name} />
+        ) : optionSelected.id === 5 ? (
+          <GestionDeportistas titulo={optionSelected.name} />
         ) : (
           <Text>{optionSelected.page}</Text>
         )}
