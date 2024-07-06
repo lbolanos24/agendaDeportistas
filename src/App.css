@@ -1,0 +1,18 @@
+/*agregar estilo box-shadow a todos los controles tipo boton*/
+.buttonSombreado {
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+.columnaCentrada {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.encabezadoTabla {
+  background-color: gray;
+  color: white;
+  text-align: center;
+  border: 2px solid #f80505;
+}
