@@ -1,11 +1,12 @@
 import { ListItemProps } from "@chakra-ui/react";
+import { Acudiente } from "./Acudiente";
 
 export class Deportista {
   id: number;
   nombre: string;
   edad: number;
   fechaNacimiento: Date;
-  tipoId: Array<ListItemProps>;
+  tipoId: string;
   direccion: string;
   eps: string;
   institucionEducativa: string;
@@ -19,13 +20,14 @@ export class Deportista {
   informacionReposicion: boolean;
   informacionVacaciones: boolean;
   comprobanteInstcripcion: boolean;
+  acudientes: Array<Acudiente>;
 
   constructor(
     id: number,
     nombre: string,
     edad: number,
     fechaNacimiento: Date,
-    tipoId: Array<ListItemProps>,
+    tipoId: string,
     direccion: string,
     eps: string,
     institucionEducativa: string,
@@ -37,7 +39,8 @@ export class Deportista {
     informacionMensualidad: boolean,
     informacionReposicion: boolean,
     informacionVacaciones: boolean,
-    comprobanteInstcripcion: boolean
+    comprobanteInstcripcion: boolean,
+    acudientes: Array<Acudiente>
 )
     {
     this.id = id;
@@ -57,5 +60,6 @@ export class Deportista {
     this.informacionReposicion = informacionReposicion;
     this.informacionVacaciones = informacionVacaciones;
     this.comprobanteInstcripcion = comprobanteInstcripcion;
+    this.acudientes = acudientes;
   }
 }

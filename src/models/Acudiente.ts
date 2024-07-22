@@ -3,7 +3,7 @@ import { ListItemProps } from "@chakra-ui/react";
 export class Acudiente {
   id: number;
   nombre: string;
-  tipoId: Array<ListItemProps>;
+  tipoId: string;
   numeroCelular: number;
   direccion: string;
   correoElectronico: string;
@@ -14,7 +14,7 @@ export class Acudiente {
   constructor(
     id: number, 
     nombre: string,
-    tipoId: Array<ListItemProps>,
+    tipoId: string,
     numeroCelular: number,
     direccion: string,
     correoElectronico: string,

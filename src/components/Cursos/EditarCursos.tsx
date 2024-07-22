@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ColorPicker } from "chakra-color-picker";
-import { ServicioCursos } from "../../services/ServicioCursos";
+import { ServicioCursos } from "../../services/servicioCursos";
 import { Curso } from "../../models/Curso";
 
 type Props = {

@@ -21,7 +21,12 @@ type Props = {
 };
 
 function EditarUbicaciones(props: Props) {
-  const [nombreUbicacion, setNombreUbicacion] = useState("");
+  const [nombre, setNombreUbicacion] = useState("");
+  const [direccion, setDireccionUbicacion] = useState("");
+  const [telefono, setTelefonoUbicacion] = useState("");
+  const [nombreContacto, setNombreContactoUbicacion] = useState("");
+  const [fechaInicioContrato, setFechaInicioContratoUbicacion] = useState("");
+  const [fechaFinContrato, setFechaFinContratoUbicacion] = useState("");
   const [isNewElement, setIsNewElement] = useState(false);
   const [opciones, setOpciones] = useState<{ id: string; value: string }[]>([]);
 
@@ -34,7 +39,13 @@ function EditarUbicaciones(props: Props) {
     // Crear el objeto
     const nuevaUbicacion = new Ubicacion(
       props.servicioUbicaciones.obtenerSiguienteId() || 1,
-      nombreUbicacion
+      nombre,
+      direccion,
+      telefono,
+      nombreContacto,
+      fechaInicioContrato,
+      fechaFinContrato
+      //Falta disponibilidad
     );
 
     // Se envian los datos capturados a una base de datos
@@ -58,8 +69,53 @@ function EditarUbicaciones(props: Props) {
           <FormControl isRequired>
             <FormLabel>Nombre Ubicación</FormLabel>
             <Input
-              placeholder="Digite el nombre del Ubicación"
+              placeholder="Digite el nombre de la Ubicación"
               onChange={(e) => setNombreUbicacion(e.target.value)}
+            />
+            </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+          <FormControl isRequired>
+            <FormLabel>Dirección</FormLabel>
+            <Input
+              placeholder="Digite la dirección de la Ubicación"
+              onChange={(e) => setDireccionUbicacion(e.target.value)}
+            />
+            </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+          <FormControl isRequired>
+            <FormLabel>Télefono</FormLabel>
+            <Input
+              placeholder="Digite el télefono de la Ubicación"
+              onChange={(e) => setTelefonoUbicacion(e.target.value)}
+            />
+            </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+          <FormControl isRequired>
+            <FormLabel>Contacto</FormLabel>
+            <Input
+              placeholder="Digite del contacto para ésta Ubicación"
+              onChange={(e) => setNombreContactoUbicacion(e.target.value)}
+            />
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+          <FormControl isRequired>
+            <FormLabel>Fecha inicio de contrato</FormLabel>
+            <Input
+              placeholder="Ingrese la fecha de inicio del contrato para la Ubicación"
+              onChange={(e) => setFechaInicioContratoUbicacion(e.target.value)}
+            />
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+          <FormControl isRequired>
+            <FormLabel>Fecha finalización de contrato</FormLabel>
+            <Input
+              placeholder="Ingrese la fecha de finalización del contrato para la Ubicación"
+              onChange={(e) => setFechaFinContratoUbicacion(e.target.value)}
             />
           </FormControl>
         </GridItem>

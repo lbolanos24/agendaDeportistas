@@ -4,7 +4,7 @@ import { Disponibilidad } from "./Disponibilidad";
 export class Profesor {
   id: number;//cedula
   nombre: string;
-  tipoId: Array<ListItemProps>;
+  tipoId: string;
   numeroCelular: number;
   direccion: string;
   eps: string;
@@ -17,7 +17,7 @@ export class Profesor {
   constructor(
     id: number,
     nombre: string,
-    tipoId: Array<ListItemProps>,
+    tipoId: string,
     numeroCelular: number,
     direccion: string,
     eps: string,

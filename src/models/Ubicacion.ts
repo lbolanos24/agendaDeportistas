@@ -34,4 +34,8 @@ export class Ubicacion{
     this.fechaFinContrato = fechaFinContrato;
     this.disponibilidades = disponibilidades;
   }
+
+  getDisponibilidades():string {
+    return this.disponibilidades.map(disponibilidad => `${disponibilidad.diaDisponibilidad} ${disponibilidad.horaInicioDisponibilidad} - ${disponibilidad.horaFinDisponibilidad}`).join(' , ');
+  }
 }
