@@ -1,3 +1,4 @@
+import { Disponibilidad } from "../models/Disponibilidad";
 import { Ubicacion } from "../models/Ubicacion";
 
 export class ServicioUbicaciones {
@@ -17,12 +18,16 @@ export class ServicioUbicaciones {
     this.ubicaciones = [];
   }
 
-  //funcion para cargar cursos Dummy
+  //funcion para cargar ubicaciones Dummy
   public cargarDummy(): void {
-    this.ubicaciones.push(new Ubicacion(1, "Sede principal"));
+    this.ubicaciones.push(new Ubicacion(1,"NombrePrueba1", "Direccion1","","",true, new Date("01/01/2024"), new Date("12/31/2024"),[new Disponibilidad("Lunes", 8,12), new Disponibilidad("Martes", 8, 12)]));
+    this.ubicaciones.push(new Ubicacion(1,"NombrePrurba2", "Direccion1","","",true, new Date("01/01/2024"), new Date("12/31/2024"),[]));
+    
+    //TODO
+    //Carga de las ubcaciones desde BD
   }
 
-  //FUncion para obtener los cursos desde el backend
+  //FUncion para obtener los ubicaciones desde el backend
   public obtenerUbicaciones(): void {
     try {
       if (this.ubicaciones.length === 0) {

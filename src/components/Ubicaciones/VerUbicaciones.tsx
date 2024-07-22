@@ -28,6 +28,11 @@ function VerUbicaciones(props: Props) {
     props.setIsNewElement(event);
   };
 
+  const handleClickVer = (event: boolean) => {
+    //TODO
+    props.setIsNewElement(event);
+  };
+
   const handleClickEliminar = (id: number) => {
     props.servicioUbicaciones.eliminarUbicacion(id);
     //Actualizar la vista
@@ -54,6 +59,18 @@ function VerUbicaciones(props: Props) {
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Nombre
               </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Inicio contrato
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Fin contrato
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Disponibilidad
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Opciones
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -62,7 +79,24 @@ function VerUbicaciones(props: Props) {
                 <Td style={{ border: "1px solid black" }}>
                   {Ubicacion.nombre}
                 </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {Ubicacion.fechaInicioContrato.toLocaleDateString()}
+                </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {Ubicacion.fechaFinContrato.toLocaleDateString()}
+                </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  { Ubicacion.getDisponibilidades()}
+                </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
+                <Button
+                    colorScheme="blue"
+                    size="sm"
+                    className="buttonSombreado"
+                    onClick={() => handleClickVer(Ubicacion.id)}
+                  >
+                    Ver
+                  </Button>
                   <Button
                     colorScheme="blue"
                     size="sm"
