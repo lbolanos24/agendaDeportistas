@@ -1,3 +1,4 @@
+import { Disponibilidad } from "../models/Disponibilidad";
 import { Profesor } from "../models/Profesor";
 
 export class ServicioProfesores {
@@ -19,7 +20,7 @@ export class ServicioProfesores {
 
   //funcion para cargar cursos Dummy
   public cargarDummy(): void {
-    this.profesores.push(new Profesor(1, "Jorge Castrillon"));
+    this.profesores.push(new Profesor(1, "Jorge Castrillon","",3157895487,"","","","","",0,[new Disponibilidad("Lunes", 8,12), new Disponibilidad("Martes", 8, 12)]));
   }
 
   //FUncion para obtener los cursos desde el backend

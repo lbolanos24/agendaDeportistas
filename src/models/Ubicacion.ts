@@ -36,6 +36,6 @@ export class Ubicacion{
   }
 
   getDisponibilidades():string {
-    return this.disponibilidades.map(disponibilidad => `${disponibilidad.diaDisponibilidad} ${disponibilidad.horaInicioDisponibilidad} - ${disponibilidad.horaFinDisponibilidad}`).join(' , ');
+    return this.disponibilidades?.map(disponibilidad => `${disponibilidad.diaDisponibilidad} ${disponibilidad.horaInicioDisponibilidad} - ${disponibilidad.horaFinDisponibilidad}`).join(' , ');
   }
 }
