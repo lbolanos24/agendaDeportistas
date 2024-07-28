@@ -28,6 +28,10 @@ function VerCursos(props: Props) {
     props.setIsNewElement(event);
   };
 
+  const handleClickVer = (event: boolean) => {
+    //TODO
+    props.setIsNewElement(event);
+  };
   const handleClickEliminar = (id: number) => {
     props.servicioProfesores.eliminarProfesores(id);
     //Actualizar la vista
@@ -54,13 +58,38 @@ function VerCursos(props: Props) {
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Nombre
               </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Numero de Celular
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Disponibilidad
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Opciones
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
             {profesores.map((profesor) => (
               <Tr key={profesor.id}>
-                <Td style={{ border: "1px solid black" }}>{profesor.nombre}</Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {profesor.nombre}
+                </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {profesor.numeroCelular}
+                </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {profesor.getDisponibilidades()}
+                </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
+                  <Button
+                    colorScheme="blue"
+                    size="sm"
+                    className="buttonSombreado"
+                    onClick={() => handleClickVer(profesor.id)}
+                  >
+                    Ver
+                  </Button>
                   <Button
                     colorScheme="blue"
                     size="sm"

@@ -27,6 +27,7 @@ function EditarUbicaciones(props: Props) {
   const [nombreContacto, setNombreContactoUbicacion] = useState("");
   const [fechaInicioContrato, setFechaInicioContratoUbicacion] = useState("");
   const [fechaFinContrato, setFechaFinContratoUbicacion] = useState("");
+  //TODO: disponibilidad
   const [isNewElement, setIsNewElement] = useState(false);
   const [opciones, setOpciones] = useState<{ id: string; value: string }[]>([]);
 
@@ -39,13 +40,14 @@ function EditarUbicaciones(props: Props) {
     // Crear el objeto
     const nuevaUbicacion = new Ubicacion(
       props.servicioUbicaciones.obtenerSiguienteId() || 1,
+      id,
       nombre,
       direccion,
       telefono,
       nombreContacto,
       fechaInicioContrato,
-      fechaFinContrato
-      //Falta disponibilidad
+      fechaFinContrato,
+      disponibilidad
     );
 
     // Se envian los datos capturados a una base de datos

@@ -1,4 +1,3 @@
-import { ListItemProps } from "@chakra-ui/react";
 import { Disponibilidad } from "./Disponibilidad";
 
 export class Profesor {
@@ -39,5 +38,9 @@ export class Profesor {
     this.nombreContacto = nombreContacto;
     this.numeroContacto = numeroContacto;
     this.disponibilidades = disponibilidades;
+  }
+
+  getDisponibilidades():string {
+    return this.disponibilidades?.map(disponibilidad => `${disponibilidad.diaDisponibilidad} ${disponibilidad.horaInicioDisponibilidad} - ${disponibilidad.horaFinDisponibilidad}`).join(' , ');
   }
 }
