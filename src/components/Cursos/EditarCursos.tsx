@@ -289,10 +289,10 @@ function EditarCursos(props: Props) {
   };
 
   //evento para guardar los datos capturados en pantalla
-  const handleClickGuardar = (event: boolean) => {
+  const handleClickGuardar = async (event: boolean) => {
     // Crear el objeto curso con los datos capturados
     const nuevoCurso = new Curso(
-      props.servicioCursos.obtenerSiguienteId() || 1,
+      1,
       nombreCurso,
       sexo,
       clasificacionEdadInicial,
@@ -309,8 +309,13 @@ function EditarCursos(props: Props) {
     // Se envian los datos capturados a una base de datos
     console.log(nuevoCurso);
 
-    props.servicioCursos?.agregarCurso(nuevoCurso);
-    props.setIsNewElement(event);
+    const cursoCreado = await props.servicioCursos?.agregarCurso(nuevoCurso);
+
+    if (!!cursoCreado) {
+      props.setIsNewElement(event);
+    } else {
+      console.error("Error al crear el curso");
+    }
   };
 
   return (

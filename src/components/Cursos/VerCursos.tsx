@@ -9,7 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { ServicioCursos } from "../../services/servicioCursos";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Curso } from "../../models/Curso";
 
 type Props = {
@@ -20,17 +20,33 @@ type Props = {
 
 function VerCursos(props: Props) {
   const [isEliminated, setIsEliminated] = useState(false);
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [curso, setCurso] = useState(null);
 
   //al cargar el formulario se deben obtener los cursos usando el servicioCursos
-  const cursos: Curso[] = props.servicioCursos?.listarCursos() || [];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await props.servicioCursos.obtenerCursos();
+        setCursos(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleClick = (event: boolean) => {
     props.setIsNewElement(event);
   };
 
-  const handleClickEliminar = (id: number) => {
+  const handleClickEliminar = async (id: number) => {
     console.log("Eliminar curso con id: " + id);
-    props.servicioCursos.eliminarCurso(id);
+    await props.servicioCursos.eliminarCurso(id);
     //Actualizar la vista
+    // Remove the course from the state
+    setCursos(cursos.filter((curso) => curso.idCurso !== id));
     setIsEliminated(!isEliminated);
   };
 
@@ -51,6 +67,9 @@ function VerCursos(props: Props) {
         <Table size="sm" variant="striped" colorScheme="blue">
           <Thead>
             <Tr>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Id
+              </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Nombre
               </Th>
@@ -79,7 +98,8 @@ function VerCursos(props: Props) {
           </Thead>
           <Tbody>
             {cursos.map((curso) => (
-              <Tr key={curso.id}>
+              <Tr key={curso.idCurso}>
+                <Td style={{ border: "1px solid black" }}>{curso.idCurso}</Td>
                 <Td style={{ border: "1px solid black" }}>{curso.nombre}</Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
                   {curso.nivel}
@@ -110,7 +130,7 @@ function VerCursos(props: Props) {
                     colorScheme="blue"
                     size="sm"
                     className="buttonSombreado"
-                    onClick={() => handleClickEliminar(curso.id)}
+                    onClick={() => handleClickEliminar(curso.idCurso)}
                   >
                     Eliminar
                   </Button>

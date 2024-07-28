@@ -1,13 +1,14 @@
+import axios from "axios";
 import { Curso } from "../models/Curso";
 
 export class ServicioCursos {
   private cursos: Curso[];
   private static instancia: ServicioCursos;
+  private ruta: String;
 
   public static getInstancia(): ServicioCursos {
     if (!this.instancia) {
       this.instancia = new ServicioCursos();
-      this.instancia.obtenerCursos();
     }
 
     return this.instancia;
@@ -15,6 +16,7 @@ export class ServicioCursos {
 
   constructor() {
     this.cursos = [];
+    this.ruta = "http://192.168.1.11:8080/api/cursos/";
   }
 
   //funcion para cargar cursos Dummy
@@ -70,19 +72,22 @@ export class ServicioCursos {
   }
 
   //FUncion para obtener los cursos desde el backend
-  public obtenerCursos(): void {
+  public async obtenerCursos(): Promise<Curso[]> {
     try {
       //realizar llamado a servicio rest
-      /*const response = await fetch("http://localhost:3000/datos");
-      const datos = await response.json();
-      console.log(datos);
-      this.cursos = datos;*/
+      const response = await axios.get(this.ruta + "/listar");
 
-      if (this.cursos.length === 0) {
-        this.cargarCursosDummy();
-      }
+      //console.log(JSON.stringify(response.data));
+
+      this.cursos = response.data;
+
+      //console.log(JSON.stringify(this.cursos));
+      return this.cursos;
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      throw new Error("Failed to fetch cursos");
+    } finally {
+      console.log("finalizado obtener cursos");
     }
   }
 
@@ -92,39 +97,32 @@ export class ServicioCursos {
   }
 
   // Función para agregar un nuevo curso
-  public agregarCurso(curso: Curso): void {
+  public async agregarCurso(curso: Curso): Promise<Curso> {
     try {
-      /*this.servicioBD.query(
-        "INSERT INTO cursos (identificacion, nombre, sexo, clasificacion_edad, edadInicial, nivel, subNivel, modalidad, categoria, duracion_clase_horas, duracion_clase_minutos, color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
-        [
-          curso.id,
-          curso.nombre,
-          curso.sexo,
-          curso.clasificacionEdadInicial,
-          curso.edadInicial,
-          curso.nivel,
-          curso.subNivel,
-          curso.modalidad,
-          curso.categoria,
-          curso.duracionClaseHoras,
-          curso.duracionClaseMinutos,
-          curso.color,
-        ]
-      );*/
-      this.cursos.push(curso);
+      const response = await axios.post<Curso>(this.ruta + "/crear", curso);
+      return response.data;
     } catch (error) {
       console.log(error);
+      throw new Error("Failed to create curso");
     }
   }
 
   // Función para eliminar un curso existente
-  public eliminarCurso(id: number): void {
-    this.cursos = this.cursos.filter((c) => c.id !== id);
+  public async eliminarCurso(id: number): Promise<void> {
+    try {
+      //realizar llamado a servicio rest
+      await axios.delete(this.ruta + "/eliminar/" + id);
+    } catch (error) {
+      console.error("ERROR al eliminar: " + error);
+      throw new Error("Failed to delete curso");
+    } finally {
+      console.log("finalizado eliminar cursos");
+    }
   }
 
   // Función para obtener un curso por su id
   public obtenerCursoPorId(id: number): Curso | undefined {
-    return this.cursos.find((c) => c.id === id);
+    return this.cursos.find((c) => c.idCurso === id);
   }
 
   // Función para obtener el siguiente id disponible
