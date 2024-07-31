@@ -19,7 +19,7 @@ export class Deportista {
   informacionMensualidad: boolean;
   informacionReposicion: boolean;
   informacionVacaciones: boolean;
-  comprobanteInstcripcion: boolean;
+  comprobanteInscripcion: boolean;
   acudientes: Array<Acudiente>;
 
   constructor(
@@ -39,7 +39,7 @@ export class Deportista {
     informacionMensualidad: boolean,
     informacionReposicion: boolean,
     informacionVacaciones: boolean,
-    comprobanteInstcripcion: boolean,
+    comprobanteInscripcion: boolean,
     acudientes: Array<Acudiente>
 )
     {
@@ -59,7 +59,11 @@ export class Deportista {
     this.informacionMensualidad = informacionMensualidad;
     this.informacionReposicion = informacionReposicion;
     this.informacionVacaciones = informacionVacaciones;
-    this.comprobanteInstcripcion = comprobanteInstcripcion;
+    this.comprobanteInscripcion = comprobanteInscripcion;
     this.acudientes = acudientes;
+  }
+
+  getAcudientes():string {
+    return this.acudientes?.map(acudiente => `${acudiente.nombre} ${acudiente.numeroCelular} `).join(' , ');
   }
 }

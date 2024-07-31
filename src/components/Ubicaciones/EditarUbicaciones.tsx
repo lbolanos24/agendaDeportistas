@@ -104,7 +104,7 @@ function EditarUbicaciones(props: Props) {
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Fecha inicio de contrato</FormLabel>
             <Input
               placeholder="Ingrese la fecha de inicio del contrato para la Ubicación"
@@ -113,7 +113,7 @@ function EditarUbicaciones(props: Props) {
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
-          <FormControl isRequired>
+          <FormControl>
             <FormLabel>Fecha finalización de contrato</FormLabel>
             <Input
               placeholder="Ingrese la fecha de finalización del contrato para la Ubicación"

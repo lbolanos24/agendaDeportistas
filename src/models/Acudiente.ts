@@ -10,7 +10,6 @@ export class Acudiente {
   imagenPropia: boolean;
   profesionEmpresa: string;
 
-
   constructor(
     id: number, 
     nombre: string,

@@ -54,6 +54,12 @@ function VerDeportistas(props: Props) {
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Nombre
               </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Edad
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Acudientes
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -62,7 +68,22 @@ function VerDeportistas(props: Props) {
                 <Td style={{ border: "1px solid black" }}>
                   {deportista.nombre}
                 </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {deportista.edad}
+                </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {deportista.getAcudientes()}
+                </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
+
+                <Button
+                    colorScheme="blue"
+                    size="sm"
+                    className="buttonSombreado"
+                    onClick={() => handleClickVer(deportista.id)}
+                  >
+                    Ver
+                  </Button>
                   <Button
                     colorScheme="blue"
                     size="sm"
