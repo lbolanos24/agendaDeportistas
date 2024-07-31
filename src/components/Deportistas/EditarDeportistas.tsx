@@ -171,29 +171,28 @@ function EditarDeportistas(props: Props) {
             />
           </FormControl>
         </GridItem>
-        <GridItem rowSpan={1} colSpan={1}>
-          <FormControl isRequired>
-            <FormLabel>Condicion importante</FormLabel>
-            <Input
-              placeholder="Indique si el deportista presenta alguna condicion importante"
-              onChange={(e) => setEps(e.target.value)}
-            />
-          </FormControl>
-        </GridItem>
       </Grid>
-
       <Grid 
       h="500px"
-      templateRows="repeat(2, 1fr)"
+      templateRows="repeat(4, 1fr)"
       templateColumns="repeat(1, 1fr)"
       gap={1}
       margin={"20px"}
       padding={"15px"}
       >
         <GridItem rowSpan={1} colSpan={1}>
+          <FormControl isRequired>
+            <FormLabel>¿CONSIDERA USTED QUE SU HIJO/A PRESENTA ALGUNA CONDICIÓN QUE SEA IMPORTANTE COMUNICAR AL PROFESOR PARA EL ADECUADO TRATAMIENTO Y EFECTIVO DESARROLLO DE LAS ACTIVIDADES DURANTE LAS CLASES?¿CUAL/CUALES?</FormLabel>
+            <Input
+              placeholder="Indique si el deportista presenta alguna condicion importante"
+              onChange={(e) => setEps(e.target.value)}
+            />
+          </FormControl>
+      </GridItem>
+      
+        <GridItem rowSpan={1} colSpan={1}>
         <FormControl isRequired>
-            <FormLabel>Imágen propia</FormLabel>
-              XXXX terminos de aceptacion de la imagen del deportista XXXX
+            <FormLabel>Durante las clases, el Club estará recopilando memorias de las actividades por medio de imágenes y/o videos, esta usted de acuerdo con que SU IMAGEN sea compartida en medios de comunicación y redes sociales?</FormLabel>
             <Input type="checkbox"
               onChange={(e) => setImagenPropia(e.target.value)}
             />
