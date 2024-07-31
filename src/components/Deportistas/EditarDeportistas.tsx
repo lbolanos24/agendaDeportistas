@@ -183,7 +183,7 @@ function EditarDeportistas(props: Props) {
       </Grid>
 
       <Grid 
-      h="300px"
+      h="500px"
       templateRows="repeat(2, 1fr)"
       templateColumns="repeat(1, 1fr)"
       gap={1}
@@ -245,9 +245,22 @@ function EditarDeportistas(props: Props) {
       margin={"20px"}
       padding={"15px"}
       >  
-            fotoDeportista,
-            fotoDocumento,
-      
+        <GridItem rowSpan={1} colSpan={1}>
+          <FormControl isRequired>
+                <FormLabel>Foto del deportista</FormLabel>
+                <Input type="image"
+                  onChange={(e) => setFotoDeportista(e.target.value)}
+              />
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+         <FormControl isRequired>
+              <FormLabel>Foto del documento</FormLabel>
+              <Input type="image"
+                onChange={(e) => setFotoDocumento(e.target.value)}
+            />
+          </FormControl>
+        </GridItem>      
       </Grid>
 
       <Grid templateColumns="repeat(6, 1fr)">
