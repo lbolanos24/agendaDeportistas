@@ -16,8 +16,7 @@ function GestionUbicaciones(props: Props) {
     <>
       <Center p="4">
         <Text as="b" textAlign="center" fontSize="20px" color="black">
-          Este es el módulo para la {props.titulo}, para crear una nueva
-          ubicación en el sistema de clic en el botón Agregar Nuevo.
+          {props.titulo}
         </Text>
       </Center>
       {!!!isNewElement ? (

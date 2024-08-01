@@ -27,6 +27,10 @@ function VerDeportistas(props: Props) {
   const handleClick = (event: boolean) => {
     props.setIsNewElement(event);
   };
+  const handleClickVer = (event: boolean) => {
+    //TODO
+    props.setIsNewElement(event);
+  };
 
   const handleClickEliminar = (id: number) => {
     props.servicioDeportistas.eliminarDeportistas(id);
@@ -55,10 +59,19 @@ function VerDeportistas(props: Props) {
                 Nombre
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Fecha de nacimiento
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Edad
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Documento
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Acudientes
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Opciones
               </Th>
             </Tr>
           </Thead>
@@ -69,7 +82,14 @@ function VerDeportistas(props: Props) {
                   {deportista.nombre}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
+                  {deportista.fechaNacimiento.toLocaleDateString()}
+                </Td>
+                <Td style={{ border: "1px solid black" }}>
                   {deportista.edad}
+                </Td>
+                <Td style={{ border: "1px solid black" }}>
+                  {deportista.tipoId}:
+                  {deportista.id}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
                   {deportista.getAcudientes()}

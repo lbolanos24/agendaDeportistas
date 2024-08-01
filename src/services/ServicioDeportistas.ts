@@ -20,7 +20,7 @@ export class ServicioDeportistas {
 
   //funcion para cargar cursos Dummy
   public cargarDummy(): void {
-    this.deportistas.push(new Deportista(1,"Liliam Bolaños",39,new Date("01/01/2024"),"CC","","","",1,"N",true,"","",true,true,true,true,[new Acudiente(1,"Acudiente1","",3154444444,"","",true,"")])); 
+    this.deportistas.push(new Deportista(123456789,"Liliam Bolaños",39,new Date("01/01/2024"),"CC","","","",1,"N",true,"","",true,true,true,true,[new Acudiente(1,"Acudiente Test","",3154444444,"","",true,"")])); 
    }
 
   //FUncion para obtener los deportistas desde el backend
