@@ -68,22 +68,13 @@ function VerCursos(props: Props) {
           <Thead>
             <Tr>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Id
-              </Th>
-              <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Nombre
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Nivel
+                Sexo
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                SubNivel
-              </Th>
-              <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Modalidad
-              </Th>
-              <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Categoria
+                Edad Inicial
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Duracion Clase
@@ -99,16 +90,13 @@ function VerCursos(props: Props) {
           <Tbody>
             {cursos.map((curso) => (
               <Tr key={curso.idCurso}>
-                <Td style={{ border: "1px solid black" }}>{curso.idCurso}</Td>
                 <Td style={{ border: "1px solid black" }}>{curso.nombre}</Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
-                  {curso.nivel}
+                  {curso.sexo}
                 </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
-                  {curso.subNivel}
+                  {curso.edad}
                 </Td>
-                <Td style={{ border: "1px solid black" }}>{curso.modalidad}</Td>
-                <Td style={{ border: "1px solid black" }}>{curso.categoria}</Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
                   {curso.duracionClaseHoras} horas {curso.duracionClaseMinutos}{" "}
                   minutos

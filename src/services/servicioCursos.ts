@@ -16,7 +16,7 @@ export class ServicioCursos {
 
   constructor() {
     this.cursos = [];
-    this.ruta = "http://192.168.1.11:8080/api/cursos/";
+    this.ruta = "http://localhost:8080/api/cursos/";
   }
 
   //funcion para cargar cursos Dummy
