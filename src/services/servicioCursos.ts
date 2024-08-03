@@ -75,7 +75,7 @@ export class ServicioCursos {
   public async obtenerCursos(): Promise<Curso[]> {
     try {
       //realizar llamado a servicio rest
-      const response = await axios.get(this.ruta + "/listar");
+      const response = await axios.get(this.ruta + "listar");
 
       //console.log(JSON.stringify(response.data));
 
@@ -99,7 +99,7 @@ export class ServicioCursos {
   // Función para agregar un nuevo curso
   public async agregarCurso(curso: Curso): Promise<Curso> {
     try {
-      const response = await axios.post<Curso>(this.ruta + "/crear", curso);
+      const response = await axios.post<Curso>(this.ruta + "crear", curso);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -111,7 +111,7 @@ export class ServicioCursos {
   public async eliminarCurso(id: number): Promise<void> {
     try {
       //realizar llamado a servicio rest
-      await axios.delete(this.ruta + "/eliminar/" + id);
+      await axios.delete(this.ruta + "eliminar/" + id);
     } catch (error) {
       console.error("ERROR al eliminar: " + error);
       throw new Error("Failed to delete curso");
