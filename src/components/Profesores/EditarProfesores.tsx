@@ -91,7 +91,6 @@ function EditarProfesores(props: Props) {
             >
               <option value="Cedula">Cédula</option>
               <option value="Pasaporte">Pasaporte</option>
-              <option value="TI">Tarjeta de Identidad</option>
               </Select>
           </FormControl>
         </GridItem>
