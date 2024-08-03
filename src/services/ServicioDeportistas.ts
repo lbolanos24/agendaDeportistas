@@ -22,7 +22,7 @@ export class ServicioDeportistas {
   public cargarDummy(): void {
     this.deportistas.push(
       new Deportista(
-        123456789,
+        "123456789",
         "Liliam Bolaños",
         39,
         new Date("01/01/2024"),
@@ -33,8 +33,8 @@ export class ServicioDeportistas {
         1,
         "N",
         true,
-        "",
-        "",
+        null,
+        null,
         true,
         true,
         true,
@@ -94,11 +94,11 @@ export class ServicioDeportistas {
     return this.deportistas.find((d) => d.id === id);
   }
 
-  public eliminarAcudiente(id: string, idDeportista: string): Acudiente {
-    const deportista = this.deportistas.find((d) => d.id === idDeportista);
-    if (deportista) {
-      return deportista.acudientes.find((a) => a.id === id);
-    }
-    return undefined;
+  public eliminarAcudiente(id: string, idDeportista: string): Array<Acudiente> {
+    return this.deportistas.find((d) => d.id === idDeportista)?.acudientes?.filter((c) => c.id !== id) || [];   
+  }
+
+  public agregarAcudiente(acudiente: Acudiente, idDeportista: string) {
+    this.deportistas.find((d) => d.id === idDeportista)?.acudientes.push(acudiente);
   }
 }

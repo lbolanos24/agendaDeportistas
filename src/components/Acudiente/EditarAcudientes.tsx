@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
-import { Deportista } from "../../models/Deportista";
+import { Acudiente } from "../../models/Acudiente";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale";
 import React from "react";
@@ -28,37 +28,18 @@ type Props = {
   isSubmitting: boolean;
   setIsNewElement: (element: boolean) => void;
   servicioDeportistas: ServicioDeportistas;
+  idDeportista: string;
 };
 
-function EditarDeportistas(props: Props) {
-  const [nombre, setNombreDeportista] = useState("");
-  const [edad, setEdad] = useState(0);
-  const [fechaNacimiento, setFechaNacimiento] = useState(new Date());
+function EditarAcudientes(props: Props) {  
+  const [nombre, setNombreAcudiente] = useState("");
   const [tipoId, setTipoId] = useState("");
   const [id, setId] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [eps, setEps] = useState("");
-  const [institucionEducativa, setInstitucioneducativa] = useState("");
-  const [grado, setGrado] = useState(0);
-  const [condicionImportante, setCondicionImportante] = useState("");
+  const [numeroCelular, setNumeroCelular] = useState(0);
+  const [direccion, setDireccion] = useState("");  
+  const [correoElectronico, setCorreoElectronico] = useState("");  
   const [imagenPropia, setImagenPropia] = useState<boolean>(false);
-  const [informacionMensualidad, setInformacionMensualidad] =
-    useState<boolean>(false);
-  const [informacionReposicion, setInformacionReposicion] =
-    useState<boolean>(false);
-  const [informacionVacaciones, setInformacionVacaciones] =
-    useState<boolean>(false);
-  const [comprobanteInscripcion, setComprobanteInscripcion] =
-    useState<boolean>(false);
-  const [acudientes, setAcudientes] = useState([]);
-  const [fotoDeportista, setFotoDeportista] = useState<ImageBitmap | null>(
-    null
-  );
-  const [fotoDocumento, setFotoDocumento] = useState<ImageBitmap | null>(null);
-  const [fotoDeportistaUrl, setFotoDeportistaUrl] = useState<string | null>(
-    null
-  );
-  const [fotoDocumentoUrl, setFotoDocumentoUrl] = useState<string | null>(null);
+  const [profesionEmpresa, setProfesionEmpresa] = useState("");  
   const [isNewElement, setIsNewElement] = useState(false);
   const [opciones, setOpciones] = useState<{ id: string; value: string }[]>([]);
 
@@ -69,87 +50,23 @@ function EditarDeportistas(props: Props) {
   //evento para guardar los datos capturados en pantalla
   const handleClickGuardar = (event: boolean) => {
     // Crear el objeto
-    const nuevoDeportista = new Deportista(
+    const nuevoAcudiente = new Acudiente(
       id,
       nombre,
-      edad,
-      fechaNacimiento,
       tipoId,
+      numeroCelular,
       direccion,
-      eps,
-      institucionEducativa,
-      grado,
-      condicionImportante,
+      correoElectronico,
       imagenPropia,
-      fotoDeportista,
-      fotoDocumento,
-      informacionMensualidad,
-      informacionReposicion,
-      informacionVacaciones,
-      comprobanteInscripcion,
-      acudientes
+      profesionEmpresa
     );
 
     // Se envian los datos capturados a una base de datos
-    console.log(nuevoDeportista);
+    console.log(nuevoAcudiente);
 
-    props.servicioDeportistas?.agregarDeportista(nuevoDeportista);
+    props.servicioDeportistas?.agregarAcudiente(nuevoAcudiente, props.idDeportista);
     props.setIsNewElement(event);
   };
-
-  const handleFileChange = async (
-    nombre: string,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      try {
-        const imageBitmap = await createImageBitmap(file);
-        if (nombre == "Documento") {
-          setFotoDocumento(imageBitmap);
-
-          // Crear una URL para la vista previa
-          const fotoDocumentoUrl = URL.createObjectURL(file);
-          setFotoDocumentoUrl(fotoDocumentoUrl);
-        } else {
-          setFotoDeportista(imageBitmap ?? null);
-
-          // Crear una URL para la vista previa
-          const fotoDeportistaUrl = URL.createObjectURL(file);
-          setFotoDeportistaUrl(fotoDeportistaUrl);
-        }
-      } catch (error) {
-        console.error("Error creating ImageBitmap:", error);
-      }
-    }
-  };
-
-  // Definir la interfaz para los props del componente CustomInput
-  interface CustomInputProps {
-    value?: string;
-    onClick?: () => void;
-  }
-
-  // Componente de entrada personalizado para Chakra UI
-  const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
-    ({ value, onClick }, ref) => (
-      <Box
-        as="button"
-        height="40px"
-        display="inline-flex"
-        alignItems="center"
-        justifyContent="center"
-        px={4}
-        border="1px solid"
-        borderColor="gray.300"
-        borderRadius="md"
-        onClick={onClick}
-        ref={ref}
-      >
-        {value}
-      </Box>
-    )
-  );
 
   return (
     <>
@@ -164,8 +81,8 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Nombre Deportista</FormLabel>
             <Input
-              placeholder="Digite el nombre del Deportista"
-              onChange={(e) => setNombreDeportista(e.target.value)}
+              placeholder="Digite el nombre del Acudiente"
+              onChange={(e) => setNombreAcudiente(e.target.value)}
             />
           </FormControl>
         </GridItem>
@@ -192,11 +109,10 @@ function EditarDeportistas(props: Props) {
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
-            <FormLabel>Edad</FormLabel>
+            <FormLabel>Número Célular</FormLabel>
             <NumberInput
               defaultValue={0}
-              onChange={(value) => setEdad(Number(value))}
-            >
+              onChange={(value) => setNumeroCelular(Number(value))}            >
               <NumberInputField />
             </NumberInput>
           </FormControl>
@@ -485,4 +401,4 @@ function EditarDeportistas(props: Props) {
   );
 }
 
-export default EditarDeportistas;
+export default EditarAcudientes;

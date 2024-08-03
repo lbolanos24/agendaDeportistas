@@ -22,7 +22,7 @@ type Props = {
 function VerAcudientes(props: Props) {
   const [isEliminated, setIsEliminated] = useState(false);
 
-  const Acudientes: Acudiente[] =
+  const acudientes: Acudiente[] =
     props.servicioDeportistas?.listarAcudientesByDeportista(
       props.idDeportista
     ) || [];
@@ -35,8 +35,8 @@ function VerAcudientes(props: Props) {
     props.setIsNewElement(event);
   };
 
-  const handleClickEliminar = (id: number) => {
-    props.servicioDeportistas.eliminarAcudientes(id);
+  const handleClickEliminar = (id: string) => {
+    props.servicioDeportistas.eliminarAcudiente(id, props.idDeportista);
     //Actualizar la vista
     setIsEliminated(!isEliminated);
   };
@@ -62,16 +62,10 @@ function VerAcudientes(props: Props) {
                 Nombre
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Fecha de nacimiento
+                Celular
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Edad
-              </Th>
-              <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Documento
-              </Th>
-              <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Acudientes
+                Correo
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Opciones
@@ -79,27 +73,24 @@ function VerAcudientes(props: Props) {
             </Tr>
           </Thead>
           <Tbody>
-            {Acudientes.map((deportista) => (
-              <Tr key={deportista.id}>
+            {acudientes.map((acudiente) => (
+              <Tr key={acudiente.id}>
                 <Td style={{ border: "1px solid black" }}>
-                  {deportista.nombre}
+                  {acudiente.nombre}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {deportista.fechaNacimiento.toLocaleDateString()}
+                  {acudiente.numeroCelular}
                 </Td>
-                <Td style={{ border: "1px solid black" }}>{deportista.edad}</Td>
+                <Td style={{ border: "1px solid black" }}>{acudiente.correoElectronico}</Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {deportista.tipoId}:{deportista.id}
-                </Td>
-                <Td style={{ border: "1px solid black" }}>
-                  {deportista.getAcudientes()}
+                  {acudiente.tipoId}:{acudiente.id}
                 </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
                   <Button
                     colorScheme="blue"
                     size="sm"
                     className="buttonSombreado"
-                    onClick={() => handleClickVer(deportista.id)}
+                    onClick={() => handleClickVer(true) }
                   >
                     Ver
                   </Button>
@@ -107,7 +98,7 @@ function VerAcudientes(props: Props) {
                     colorScheme="blue"
                     size="sm"
                     className="buttonSombreado"
-                    onClick={() => handleClickEliminar(deportista.id)}
+                    onClick={() => handleClickEliminar(acudiente.id)}
                   >
                     Eliminar
                   </Button>
