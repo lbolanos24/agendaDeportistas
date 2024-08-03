@@ -18,7 +18,9 @@ function GestionDeportistas(props: Props) {
     <>
       <Center p="4">
         <Text as="b" textAlign="center" fontSize="20px" color="black">
-          {props.titulo}
+          {!!!isNewElement
+            ? "Listado de Deportistas Inscritos"
+            : "Captura de Datos del Deportista"}
         </Text>
       </Center>
       {!!!isNewElement ? (

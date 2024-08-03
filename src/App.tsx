@@ -1,4 +1,4 @@
-import { ChakraProvider, Text } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme, Text } from "@chakra-ui/react";
 import Encabezado from "./components/Encabezado";
 import { useState } from "react";
 import GestionCursos from "./components/Cursos/GestionCursos";
@@ -7,6 +7,7 @@ import GestionProfesores from "./components/Profesores/GestionProfesores";
 import GestionHorarios from "./components/Horarios/GestionHorarios";
 import GestionDeportistas from "./components/Deportistas/GestionDeportistas";
 import GestionUbicaciones from "./components/Ubicaciones/GestionUbicaciones";
+import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   const [optionSelected, setOptionSelected] = useState({
@@ -32,8 +33,27 @@ function App() {
     setOptionSelected(element);
   };
 
+  // Tema personalizado para Chakra UI
+  const theme = extendTheme({
+    styles: {
+      global: {
+        ".react-datepicker__input-container input": {
+          backgroundColor: "white",
+        },
+        ".react-datepicker": {
+          right: "0", // Asegurar que el selector de fechas esté alineado al borde derecho
+        },
+        '.react-datepicker-popper[data-placement^="right"] .react-datepicker__triangle':
+          {
+            left: "auto",
+            right: "0", // Alinear el triángulo a la derecha
+          },
+      },
+    },
+  });
+
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <div
         style={{
           backgroundColor: "#e0f2f1" /* Color de fondo */,
