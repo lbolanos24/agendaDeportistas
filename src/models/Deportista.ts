@@ -15,6 +15,8 @@ export class Deportista {
   imagenPropia: boolean;
   fotoDeportista: ImageBitmap | null;
   fotoDocumento: ImageBitmap | null;
+  fotoDeportistaUrl: string;
+  fotoDocumentoUrl: string;
   //aceptacion de terminos se da por el acudiente pero se mira en la pantalla del deportista
   informacionMensualidad: boolean;
   informacionReposicion: boolean;
@@ -36,6 +38,8 @@ export class Deportista {
     imagenPropia: boolean,
     fotoDeportista: ImageBitmap | null,
     fotoDocumento: ImageBitmap | null,
+    fotoDeportistaUrl: string,
+    fotoDocumentoUrl: string,
     informacionMensualidad: boolean,
     informacionReposicion: boolean,
     informacionVacaciones: boolean,
@@ -55,16 +59,12 @@ export class Deportista {
     this.imagenPropia = imagenPropia;
     this.fotoDeportista = fotoDeportista;
     this.fotoDocumento = fotoDocumento;
+    this.fotoDeportistaUrl = fotoDeportistaUrl;
+    this.fotoDocumentoUrl = fotoDocumentoUrl;
     this.informacionMensualidad = informacionMensualidad;
     this.informacionReposicion = informacionReposicion;
     this.informacionVacaciones = informacionVacaciones;
     this.comprobanteInscripcion = comprobanteInscripcion;
     this.acudientes = acudientes;
-  }
-
-  getAcudientes(): string {
-    return this.acudientes
-      ?.map((acudiente) => `${acudiente.nombre} ${acudiente.numeroCelular} `)
-      .join(" , ");
   }
 }

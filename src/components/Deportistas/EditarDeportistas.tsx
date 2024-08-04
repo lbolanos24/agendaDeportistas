@@ -12,6 +12,7 @@ import {
   Checkbox,
   Image,
   extendTheme,
+  Textarea,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
@@ -19,15 +20,33 @@ import { Deportista } from "../../models/Deportista";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale";
 import React from "react";
+import VerAcudientes from "../Acudiente/VerAcudiente";
+import EditarAcudientes from "../Acudiente/EditarAcudientes";
+import { Acudiente } from "../../models/Acudiente";
+import DateTimePicker from "../Controles/DateTimePicker";
+import { Constantes } from "../../models/Constantes";
 //import { Acudiente } from "../../models/Acudiente";
 
 // Registrar el idioma español en react-datepicker
 registerLocale("es", es);
 
 type Props = {
-  isSubmitting: boolean;
-  setIsNewElement: (element: boolean) => void;
+  setIsEditing: (element: boolean) => void;
   servicioDeportistas: ServicioDeportistas;
+  deportistaSelected: Deportista;
+  isNewDeportista: boolean;
+};
+
+const acudienteVacio = {
+  id: "",
+  tipoId: "",
+  nombre: "",
+  direccion: "",
+  numeroCelular: 0,
+  correoElectronico: "",
+  imagenPropia: false,
+  profesionEmpresa: "",
+  parentesco: "",
 };
 
 function EditarDeportistas(props: Props) {
@@ -50,20 +69,50 @@ function EditarDeportistas(props: Props) {
     useState<boolean>(false);
   const [comprobanteInscripcion, setComprobanteInscripcion] =
     useState<boolean>(false);
-  const [acudientes, setAcudientes] = useState([]);
+  const [acudientes, setAcudientes] = useState<Acudiente[]>([]);
   const [fotoDeportista, setFotoDeportista] = useState<ImageBitmap | null>(
     null
   );
   const [fotoDocumento, setFotoDocumento] = useState<ImageBitmap | null>(null);
-  const [fotoDeportistaUrl, setFotoDeportistaUrl] = useState<string | null>(
-    null
-  );
-  const [fotoDocumentoUrl, setFotoDocumentoUrl] = useState<string | null>(null);
-  const [isNewElement, setIsNewElement] = useState(false);
+  const [fotoDeportistaUrl, setFotoDeportistaUrl] = useState<string>("");
+  const [fotoDocumentoUrl, setFotoDocumentoUrl] = useState<string>("");
   const [opciones, setOpciones] = useState<{ id: string; value: string }[]>([]);
+  const [isAcudientesOpen, setIsAcudientesOpen] = useState(false);
+  const [acudienteSelected, setAcudienteSelected] =
+    useState<Acudiente>(acudienteVacio);
+  const [isNewAcudiente, setIsNewAcudiente] = useState(false);
+
+  useEffect(() => {
+    if (props.deportistaSelected) {
+      setNombreDeportista(props.deportistaSelected.nombre);
+      setEdad(props.deportistaSelected.edad);
+      setFechaNacimiento(props.deportistaSelected.fechaNacimiento);
+      setTipoId(props.deportistaSelected.tipoId);
+      setId(props.deportistaSelected.id);
+      setDireccion(props.deportistaSelected.direccion);
+      setEps(props.deportistaSelected.eps);
+      setInstitucioneducativa(props.deportistaSelected.institucionEducativa);
+      setGrado(props.deportistaSelected.grado);
+      setCondicionImportante(props.deportistaSelected.condicionImportante);
+      setImagenPropia(props.deportistaSelected.imagenPropia);
+      setFotoDeportista(props.deportistaSelected.fotoDeportista);
+      setFotoDocumento(props.deportistaSelected.fotoDocumento);
+      setFotoDeportistaUrl(props.deportistaSelected.fotoDeportistaUrl);
+      setFotoDocumentoUrl(props.deportistaSelected.fotoDocumentoUrl);
+      setInformacionMensualidad(
+        props.deportistaSelected.informacionMensualidad
+      );
+      setInformacionReposicion(props.deportistaSelected.informacionReposicion);
+      setInformacionVacaciones(props.deportistaSelected.informacionVacaciones);
+      setComprobanteInscripcion(
+        props.deportistaSelected.comprobanteInscripcion
+      );
+      setAcudientes(props.deportistaSelected.acudientes);
+    }
+  }, [props.deportistaSelected]);
 
   const handleClickCancelar = (event: boolean) => {
-    props.setIsNewElement(event);
+    props.setIsEditing(event);
   };
 
   //evento para guardar los datos capturados en pantalla
@@ -83,6 +132,8 @@ function EditarDeportistas(props: Props) {
       imagenPropia,
       fotoDeportista,
       fotoDocumento,
+      fotoDeportistaUrl,
+      fotoDocumentoUrl,
       informacionMensualidad,
       informacionReposicion,
       informacionVacaciones,
@@ -94,7 +145,7 @@ function EditarDeportistas(props: Props) {
     console.log(nuevoDeportista);
 
     props.servicioDeportistas?.agregarDeportista(nuevoDeportista);
-    props.setIsNewElement(event);
+    props.setIsEditing(false);
   };
 
   const handleFileChange = async (
@@ -124,35 +175,62 @@ function EditarDeportistas(props: Props) {
     }
   };
 
-  // Definir la interfaz para los props del componente CustomInput
-  interface CustomInputProps {
-    value?: string;
-    onClick?: () => void;
+  function handleClickAcudientes(id: string, isNew: boolean): void {
+    if (!isNew) {
+      if (acudientes.length > 0) {
+        const acudiente = acudientes.find((acudiente) => acudiente.id === id);
+        if (acudiente) {
+          setAcudienteSelected(acudiente);
+        }
+      } else {
+        console.error("No acudientes found.");
+      }
+    } else {
+      setAcudienteSelected(acudienteVacio);
+    }
+
+    setIsAcudientesOpen(true);
+    setIsNewAcudiente(isNew);
   }
 
-  // Componente de entrada personalizado para Chakra UI
-  const CustomInput = React.forwardRef<HTMLDivElement, CustomInputProps>(
-    ({ value, onClick }, ref) => (
-      <Box
-        as="button"
-        height="40px"
-        display="inline-flex"
-        alignItems="center"
-        justifyContent="center"
-        px={4}
-        border="1px solid"
-        borderColor="gray.300"
-        borderRadius="md"
-        onClick={onClick}
-        ref={ref}
-      >
-        {value}
-      </Box>
-    )
-  );
+  const handleCloseModal = () => {
+    setIsAcudientesOpen(false);
+  };
+
+  function handleSaveAcudiente(acudiente: Acudiente): void {
+    if (acudiente !== null) {
+      if (isNewAcudiente) {
+        acudientes.push(acudiente);
+      } else {
+        const index = acudientes.findIndex((ac) => ac.id === acudiente.id);
+        if (index > -1) {
+          acudientes[index] = acudiente;
+          if (!props.isNewDeportista) {
+            // TODO guardar el acudiente en la BD
+          }
+        } else {
+          console.error("Acudiente not found.");
+        }
+      }
+    }
+
+    setIsAcudientesOpen(false);
+  }
+
+  function handlerDeleteAcudiente(id: string): void {
+    setAcudientes(acudientes.filter((ac) => ac.id !== id));
+  }
 
   return (
     <>
+      <EditarAcudientes
+        onSave={handleSaveAcudiente}
+        acudienteSeleccionado={acudienteSelected}
+        isEditarAcudienteOpen={isAcudientesOpen}
+        onClose={handleCloseModal}
+        idDeportista={id}
+        isNewElement={isNewAcudiente}
+      ></EditarAcudientes>
       <Grid
         templateRows="repeat(2, 1fr)"
         templateColumns="repeat(4, 1fr)"
@@ -164,6 +242,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Nombre Deportista</FormLabel>
             <Input
+              value={nombre}
               placeholder="Digite el nombre del Deportista"
               onChange={(e) => setNombreDeportista(e.target.value)}
             />
@@ -173,6 +252,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Tipo de identificación</FormLabel>
             <Select
+              value={tipoId}
               placeholder="Seleccione el numero de identificación"
               onChange={(e) => setTipoId(e.target.value)}
             >
@@ -185,6 +265,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Numero de Identificación</FormLabel>
             <Input
+              value={id}
               placeholder="Digite el numero de Identificación"
               onChange={(e) => setId(e.target.value)}
             />
@@ -194,6 +275,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Edad</FormLabel>
             <NumberInput
+              value={edad}
               defaultValue={0}
               onChange={(value) => setEdad(Number(value))}
             >
@@ -202,31 +284,18 @@ function EditarDeportistas(props: Props) {
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
-          <FormControl isRequired>
-            <FormLabel>Fecha de nacimiento</FormLabel>
-            <Box display="flex">
-              <DatePicker
-                selected={fechaNacimiento}
-                onChange={(date: Date | null) => {
-                  if (date !== null) {
-                    setFechaNacimiento(date);
-                  }
-                }}
-                locale="es"
-                dateFormat="dd/MM/yyyy"
-                customInput={<CustomInput />}
-                popperPlacement="right-start" // Posiciona el selector de fechas a la derecha del input
-                showMonthDropdown // Mostrar dropdown para seleccionar el mes
-                showYearDropdown // Mostrar dropdown para seleccionar el año
-                dropdownMode="select" // Usar select en vez de scroll para el dropdown
-              />
-            </Box>
-          </FormControl>
+          <DateTimePicker
+            fechaNacimiento={fechaNacimiento}
+            setFechaNacimiento={setFechaNacimiento}
+            isRequired={true}
+            label={"Fecha de Nacimiento"}
+          />
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
             <FormLabel>Dirección</FormLabel>
             <Input
+              value={direccion}
               placeholder="Digite la dirección"
               onChange={(e) => setDireccion(e.target.value)}
             />
@@ -236,6 +305,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>EPS</FormLabel>
             <Input
+              value={eps}
               placeholder="Digite el nombre de la EPS"
               onChange={(e) => setEps(e.target.value)}
             />
@@ -245,6 +315,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Institucion educativa</FormLabel>
             <Input
+              value={institucionEducativa}
               placeholder="Digite la institucion educativa a la que pertenece el deportista"
               onChange={(e) => setInstitucioneducativa(e.target.value)}
             />
@@ -254,6 +325,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Grado</FormLabel>
             <NumberInput
+              value={grado}
               defaultValue={0}
               onChange={(value) => setGrado(Number(value))}
             >
@@ -261,17 +333,26 @@ function EditarDeportistas(props: Props) {
             </NumberInput>
           </FormControl>
         </GridItem>
-        <GridItem rowSpan={1} colSpan={4}>
+        <GridItem rowSpan={1} colSpan={3}>
           <FormControl isRequired>
-            <FormLabel>
-              ¿CONSIDERA USTED QUE SU HIJO/A PRESENTA ALGUNA CONDICIÓN QUE SEA
-              IMPORTANTE COMUNICAR AL PROFESOR PARA EL ADECUADO TRATAMIENTO Y
-              EFECTIVO DESARROLLO DE LAS ACTIVIDADES DURANTE LAS
-              CLASES?¿CUAL/CUALES?
-            </FormLabel>
-            <Input
+            <FormLabel>Acudientes</FormLabel>
+            <VerAcudientes
+              onDelete={handlerDeleteAcudiente}
+              onClick={handleClickAcudientes}
+              servicioDeportistas={props.servicioDeportistas}
+              idDeportista={id}
+              acudientes={acudientes}
+              isNewDeportista={props.isNewDeportista}
+            ></VerAcudientes>
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={2} colSpan={4}>
+          <FormControl isRequired>
+            <FormLabel>{Constantes.CONDICION_IMPORTANTE_LABEL}</FormLabel>
+            <Textarea
+              value={condicionImportante}
               placeholder="Indique si el deportista presenta alguna condicion importante"
-              onChange={(e) => setEps(e.target.value)}
+              onChange={(e) => setCondicionImportante(e.target.value)}
             />
           </FormControl>
         </GridItem>
@@ -286,13 +367,10 @@ function EditarDeportistas(props: Props) {
                   borderColor: "black",
                 },
               }}
-              checked={imagenPropia}
+              isChecked={imagenPropia}
               onChange={(e) => setImagenPropia(e.target.checked)}
             >
-              Durante las clases, el Club estará recopilando memorias de las
-              actividades por medio de imágenes y/o videos, esta usted de
-              acuerdo con que SU IMAGEN sea compartida en medios de comunicación
-              y redes sociales?
+              <FormLabel>{Constantes.IMAGEN_PROPIA_LABEL}</FormLabel>
             </Checkbox>
           </FormControl>
         </GridItem>
@@ -307,23 +385,10 @@ function EditarDeportistas(props: Props) {
                   borderColor: "black",
                 },
               }}
-              checked={informacionMensualidad}
+              isChecked={informacionMensualidad}
               onChange={(e) => setInformacionMensualidad(e.target.checked)}
             >
-              El pago de las mensualidades corresponden al trabajo de 4 semanas
-              por mes y de ahí se despliega la cantidad de clases que adquiera
-              la familia por semana, si por algún motivo nos vemos en la
-              necesidad de cancelar alguna de las clases (Festivo, eventos
-              deportivos, incapacidad del profesor sin posible reemplazo) se
-              tendrá en cuenta le número de clases dictadas al grupo para hacer
-              la reposición de la misma. En cuyo caso, será el profesor titular
-              del grupo quien coordinará con las familias la reposición de la
-              clase procurando que la mayoría de los integrantes del grupo pueda
-              asistir en un mismo horario, de no ser posible le pedimos por
-              favor nos envíe un correo con el asunto SOLICITUD DE REPOSICIÓN y
-              el número de documento del niño o la niña, así podremos desde
-              nuestra base de datos indicarle cuales son las opciones para dicha
-              reposición. La respuesta a este punto es ENTENDIDO.
+              <FormLabel>{Constantes.INFORMACION_MENSUALIDAD_LABEL}</FormLabel>
             </Checkbox>
           </FormControl>
         </GridItem>
@@ -338,20 +403,10 @@ function EditarDeportistas(props: Props) {
                   borderColor: "black",
                 },
               }}
-              checked={informacionReposicion}
+              isChecked={informacionReposicion}
               onChange={(e) => setInformacionReposicion(e.target.checked)}
             >
-              Entendemos que en algunos casos se pueden presentar inasistencias,
-              es importante para nosotros que usted como adulto tenga claro que
-              para realizar una reposición de clase necesitamos que nos comparta
-              un comprobante medico para reponer todas las clases que sean
-              necesarias debido a dicha incapacidad, y en caso de no tenerlo
-              solo podremos reponer 1 clase por mes con previa reserva. Para
-              esto deberá enviarnos un correo con el asunto SOLICITUD DE
-              REPOSICIÓN y el número de documento del niño o la niña, así
-              podremos desde nuestra base de datos indicarle cuales son las
-              opciones para dicha reposición. La respuesta a este punto es
-              ENTENDIDO
+              <FormLabel>{Constantes.INFORMACION_REPOSICION_LABEL}</FormLabel>
             </Checkbox>
           </FormControl>
         </GridItem>
@@ -366,22 +421,10 @@ function EditarDeportistas(props: Props) {
                   borderColor: "black",
                 },
               }}
-              checked={informacionVacaciones}
+              isChecked={informacionVacaciones}
               onChange={(e) => setInformacionVacaciones(e.target.checked)}
             >
-              Con respecto a las fechas de vacaciones (inicio de año, semana
-              santa, vacaciones de mitad de año, semana de octubre y final de
-              año) consideramos importante que las familias sepan que no serán
-              contempladas en los cobros de mensualidades, y por tanto no se
-              dictarán para respetar los planes familiares. Para las familias
-              que prefieren conservar las actividades se realizarán propuesta de
-              intensivos para estas fechas y de acuerdo a la cobertura se
-              extenderán la mayor cantidad de tiempo posible y para organizar
-              estas actividades será el profesor titular del grupo quien
-              coordinará con las familias este trabajo, si por algún motivo el
-              profesor no dictará estas actividades será él quien direccione a
-              las familias interesadas con el área administrativa para ayudarlas
-              con su necesidad. La respuesta a este punto es ENTENDIDO
+              <FormLabel>{Constantes.INFORMACION_VACACIONES_LABEL}</FormLabel>
             </Checkbox>
           </FormControl>
         </GridItem>
@@ -396,16 +439,10 @@ function EditarDeportistas(props: Props) {
                   borderColor: "black",
                 },
               }}
-              checked={comprobanteInscripcion}
+              isChecked={comprobanteInscripcion}
               onChange={(e) => setComprobanteInscripcion(e.target.checked)}
             >
-              Para finalizar el proceso de inscripción y entendiendo que está de
-              acuerdo con lo descrito en este formulario. Le pedimos por favor
-              cancelar el valor de la matrícula por $100.000COP a la cuenta de
-              ahorros 00682228130 de Bancolombia y nos comparta el comprobante.
-              La matrícula corresponde al seguro contra accidentes deportivos
-              con cobertura desde el 1 de enero hasta el 31 de diciembre del
-              presente año y esta debe renovarse cada año.
+              <FormLabel>{Constantes.COMPROBANTE_INSCRIPCION_LABEL}</FormLabel>
             </Checkbox>
           </FormControl>
         </GridItem>
@@ -460,7 +497,6 @@ function EditarDeportistas(props: Props) {
             className="buttonSombreado"
             mt={4}
             colorScheme="blue"
-            isLoading={props.isSubmitting}
             type="submit"
             margin={"30px"}
             onClick={() => handleClickCancelar(false)}
@@ -472,7 +508,6 @@ function EditarDeportistas(props: Props) {
           <Button
             className="buttonSombreado"
             mt={4}
-            isLoading={props.isSubmitting}
             type="submit"
             margin={"30px"}
             onClick={() => handleClickGuardar(false)}

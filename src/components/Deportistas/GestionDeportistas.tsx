@@ -8,32 +8,82 @@ import VerDeportistas from "./VerDeportistas";
 
 type Props = { titulo: string };
 
+const deportistaVacio = {
+  id: "",
+  nombre: "",
+  tipoId: "",
+  fechaNacimiento: new Date(),
+  edad: 0,
+  direccion: "",
+  eps: "",
+  institucionEducativa: "",
+  grado: 0,
+  condicionImportante: "",
+  imagenPropia: false,
+  fotoDeportista: null,
+  fotoDocumento: null,
+  fotoDeportistaUrl: "",
+  fotoDocumentoUrl: "",
+  informacionMensualidad: false,
+  informacionReposicion: false,
+  informacionVacaciones: false,
+  comprobanteInscripcion: false,
+  acudientes: [
+    {
+      id: "",
+      tipoId: "",
+      nombre: "",
+      direccion: "",
+      numeroCelular: 0,
+      correoElectronico: "",
+      imagenPropia: false,
+      profesionEmpresa: "",
+      parentesco: "",
+    },
+  ],
+};
+
 function GestionDeportistas(props: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isNewElement, setIsNewElement] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isNewDeportista, setIsNewDeportista] = useState(false);
+  const [deportistaSelected, setDeportistaSelected] =
+    useState<Deportista>(deportistaVacio);
 
   const servicioDeportistas = ServicioDeportistas.getInstancia();
+
+  function handleSelectDeportista(deportistaSelected: Deportista): void {
+    setDeportistaSelected(deportistaSelected);
+    setIsEditing(true);
+    setIsNewDeportista(false);
+  }
+
+  function handleNewDeportistaClick(newItem: boolean): void {
+    setIsNewDeportista(true);
+    setIsEditing(true);
+    setDeportistaSelected(deportistaVacio);
+  }
 
   return (
     <>
       <Center p="4">
         <Text as="b" textAlign="center" fontSize="20px" color="black">
-          {!!!isNewElement
+          {!!!isEditing
             ? "Listado de Deportistas Inscritos"
             : "Captura de Datos del Deportista"}
         </Text>
       </Center>
-      {!!!isNewElement ? (
+      {!!!isEditing ? (
         <VerDeportistas
-          isSubmitting={isSubmitting}
-          setIsNewElement={setIsNewElement}
+          onNewDeportistaClick={handleNewDeportistaClick}
           servicioDeportistas={servicioDeportistas}
+          onSelect={handleSelectDeportista}
         />
       ) : (
         <EditarDeportistas
-          isSubmitting={isSubmitting}
-          setIsNewElement={setIsNewElement}
+          setIsEditing={setIsEditing}
           servicioDeportistas={servicioDeportistas}
+          deportistaSelected={deportistaSelected}
+          isNewDeportista={isNewDeportista}
         />
       )}
     </>

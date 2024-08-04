@@ -102,25 +102,6 @@ function EditarCursos(props: Props) {
       edadInicial !== "" &&
       (Number(duracionClaseHoras) > 0 || Number(duracionClaseMinutos) > 0) &&
       color !== "";
-
-    console.log(
-      "nombre:" +
-        nombreCurso +
-        " - sexo:" +
-        sexo +
-        " - clasifEdad:" +
-        clasificacionEdadInicial +
-        " - edadInicial:" +
-        edadInicial +
-        " - duraHora: " +
-        duracionClaseHoras +
-        " - duraMin: " +
-        duracionClaseMinutos +
-        " - color:" +
-        color +
-        " - isValid:" +
-        isValid
-    );
     setIsFormValid(isValid);
   }, [
     nombreCurso,

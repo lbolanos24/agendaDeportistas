@@ -1,5 +1,3 @@
-import { ListItemProps } from "@chakra-ui/react";
-
 export class Acudiente {
   id: string;
   nombre: string;
@@ -9,6 +7,7 @@ export class Acudiente {
   correoElectronico: string;
   imagenPropia: boolean;
   profesionEmpresa: string;
+  parentesco: string;
 
   constructor(
     id: string,
@@ -18,7 +17,8 @@ export class Acudiente {
     direccion: string,
     correoElectronico: string,
     imagenPropia: boolean,
-    profesionEmpresa: string
+    profesionEmpresa: string,
+    parentesco: string
   ) {
     this.id = id;
     this.nombre = nombre;
@@ -28,5 +28,6 @@ export class Acudiente {
     this.correoElectronico = correoElectronico;
     this.imagenPropia = imagenPropia;
     this.profesionEmpresa = profesionEmpresa;
+    this.parentesco = parentesco;
   }
 }

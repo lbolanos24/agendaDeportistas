@@ -26,7 +26,7 @@ export class ServicioDeportistas {
         "Liliam Bolaños",
         39,
         new Date("01/01/2024"),
-        "CC",
+        "",
         "",
         "",
         "",
@@ -35,11 +35,25 @@ export class ServicioDeportistas {
         true,
         null,
         null,
+        "",
+        "",
+        true,
+        false,
         true,
         true,
-        true,
-        true,
-        [new Acudiente("1", "Acudiente Test", "", 3154444444, "", "", true, "")]
+        [
+          new Acudiente(
+            "1",
+            "Acudiente Test",
+            "",
+            3154444444,
+            "",
+            "",
+            true,
+            "",
+            ""
+          ),
+        ]
       )
     );
   }
@@ -95,10 +109,16 @@ export class ServicioDeportistas {
   }
 
   public eliminarAcudiente(id: string, idDeportista: string): Array<Acudiente> {
-    return this.deportistas.find((d) => d.id === idDeportista)?.acudientes?.filter((c) => c.id !== id) || [];   
+    return (
+      this.deportistas
+        .find((d) => d.id === idDeportista)
+        ?.acudientes?.filter((c) => c.id !== id) || []
+    );
   }
 
   public agregarAcudiente(acudiente: Acudiente, idDeportista: string) {
-    this.deportistas.find((d) => d.id === idDeportista)?.acudientes.push(acudiente);
+    this.deportistas
+      .find((d) => d.id === idDeportista)
+      ?.acudientes.push(acudiente);
   }
 }

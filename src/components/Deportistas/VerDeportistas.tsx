@@ -8,33 +8,45 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
 import { Deportista } from "../../models/Deportista";
 
 type Props = {
-  isSubmitting: boolean;
-  setIsNewElement: (element: boolean) => void;
+  onNewDeportistaClick: (element: boolean) => void;
   servicioDeportistas: ServicioDeportistas;
+  onSelect: (deportista: Deportista) => void;
 };
 
 function VerDeportistas(props: Props) {
   const [isEliminated, setIsEliminated] = useState(false);
+  const [deportistas, setDeportistas] = useState<Deportista[]>([]);
 
-  const deportistas: Deportista[] =
-    props.servicioDeportistas?.listarDeportistas() || [];
+  useEffect(() => {
+    setDeportistas(props.servicioDeportistas.listarDeportistas());
+  }, [setDeportistas]);
 
-  const handleClick = (event: boolean) => {
-    props.setIsNewElement(event);
-  };
-  const handleClickVer = (event: boolean) => {
-    //TODO
-    props.setIsNewElement(event);
+  const handleClick = () => {
+    props.onNewDeportistaClick(true);
   };
 
-  const handleClickEliminar = (id: number) => {
+  const handleClickVer = (id: string) => {
+    const deportistaSelected = deportistas.find(
+      (deportista) => deportista.id === id
+    );
+    // Se selecciona el deportista para ver sus detalles o editarlos
+    if (deportistaSelected != null) {
+      props.onSelect(deportistaSelected);
+    }
+  };
+
+  const handleClickEliminar = (id: string) => {
+    //Se elimina el deportista de la BD
     props.servicioDeportistas.eliminarDeportistas(id);
+
     //Actualizar la vista
+    setDeportistas(deportistas.filter((d) => d.id !== id));
+
     setIsEliminated(!isEliminated);
   };
 
@@ -43,10 +55,9 @@ function VerDeportistas(props: Props) {
       <Button
         mt={4}
         colorScheme="blue"
-        isLoading={props.isSubmitting}
         type="submit"
         margin={"20px"}
-        onClick={() => handleClick(true)}
+        onClick={() => handleClick()}
         className="buttonSombreado"
       >
         Agregar Nuevo
@@ -84,19 +95,20 @@ function VerDeportistas(props: Props) {
                 <Td style={{ border: "1px solid black" }}>
                   {deportista.fechaNacimiento.toLocaleDateString()}
                 </Td>
+                <Td style={{ border: "1px solid black" }}>{deportista.edad}</Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {deportista.edad}
+                  {deportista.tipoId}:{deportista.id}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {deportista.tipoId}:
-                  {deportista.id}
-                </Td>
-                <Td style={{ border: "1px solid black" }}>
-                  {deportista.getAcudientes()}
+                  {deportista.acudientes
+                    ?.map(
+                      (acudiente) =>
+                        `${acudiente.nombre} ${acudiente.numeroCelular} `
+                    )
+                    .join(" , ")}
                 </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
-
-                <Button
+                  <Button
                     colorScheme="blue"
                     size="sm"
                     className="buttonSombreado"
