@@ -28,19 +28,7 @@ const deportistaVacio = {
   informacionReposicion: false,
   informacionVacaciones: false,
   comprobanteInscripcion: false,
-  acudientes: [
-    {
-      id: "",
-      tipoId: "",
-      nombre: "",
-      direccion: "",
-      numeroCelular: 0,
-      correoElectronico: "",
-      imagenPropia: false,
-      profesionEmpresa: "",
-      parentesco: "",
-    },
-  ],
+  acudientes: [],
 };
 
 function GestionDeportistas(props: Props) {

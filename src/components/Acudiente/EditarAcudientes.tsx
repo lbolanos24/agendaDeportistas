@@ -79,8 +79,8 @@ function EditarAcudientes(props: Props) {
 
   //evento para guardar los datos capturados en pantalla
   const handleClickGuardar = () => {
-    // Crear el objeto
-    if (props.isNewElement) {
+    // TO DO Crear el objeto en base de datos
+    if (!props.isNewElement) {
     }
     const nuevoAcudiente = new Acudiente(
       id,

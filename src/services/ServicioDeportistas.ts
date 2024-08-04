@@ -20,42 +20,41 @@ export class ServicioDeportistas {
 
   //funcion para cargar cursos Dummy
   public cargarDummy(): void {
-    this.deportistas.push(
-      new Deportista(
-        "123456789",
-        "Liliam Bolaños",
-        39,
-        new Date("01/01/2024"),
-        "",
-        "",
-        "",
-        "",
-        1,
-        "N",
-        true,
-        null,
-        null,
-        "",
-        "",
-        true,
-        false,
-        true,
-        true,
-        [
-          new Acudiente(
-            "1",
-            "Acudiente Test",
-            "",
-            3154444444,
-            "",
-            "",
-            true,
-            "",
-            ""
-          ),
-        ]
-      )
-    );
+    this.deportistas.push({
+      id: "123456789",
+      nombre: "Liliam Bolaños",
+      tipoId: "Cédula de Ciudadania",
+      edad: 39,
+      fechaNacimiento: new Date("2024-01-01T05:00:00.000Z"),
+      direccion: "",
+      eps: "",
+      institucionEducativa: "",
+      grado: 1,
+      condicionImportante: "N",
+      imagenPropia: true,
+      fotoDeportista: null,
+      fotoDocumento: null,
+      fotoDeportistaUrl:
+        "blob:http://localhost:5173/35b63731-3364-4fc7-8b36-52b94f7441fb",
+      fotoDocumentoUrl: "",
+      informacionMensualidad: true,
+      informacionReposicion: false,
+      informacionVacaciones: true,
+      comprobanteInscripcion: true,
+      acudientes: [
+        {
+          id: "1",
+          nombre: "Acudiente Test",
+          tipoId: "",
+          numeroCelular: 3154444444,
+          direccion: "",
+          correoElectronico: "",
+          imagenPropia: true,
+          profesionEmpresa: "",
+          parentesco: "",
+        },
+      ],
+    });
   }
 
   //FUncion para obtener los deportistas desde el backend

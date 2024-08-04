@@ -7,6 +7,9 @@ import {
   Tr,
   Td,
   Button,
+  Box,
+  Image,
+  Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
@@ -67,6 +70,9 @@ function VerDeportistas(props: Props) {
           <Thead>
             <Tr>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
+                Foto
+              </Th>
+              <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Nombre
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
@@ -89,6 +95,22 @@ function VerDeportistas(props: Props) {
           <Tbody>
             {deportistas.map((deportista) => (
               <Tr key={deportista.id}>
+                <Td style={{ border: "1px solid black" }}>
+                  <Center mt={4}>
+                    <Image
+                      border={
+                        deportista.imagenPropia
+                          ? "4px solid green"
+                          : "4px solid red"
+                      }
+                      src={deportista.fotoDeportistaUrl}
+                      alt="Preview"
+                      maxW="200px"
+                      maxH="200px"
+                      borderRadius="md"
+                    />
+                  </Center>
+                </Td>
                 <Td style={{ border: "1px solid black" }}>
                   {deportista.nombre}
                 </Td>
