@@ -4,26 +4,26 @@ export class Profesor {
   id: string; //cedula
   nombre: string;
   tipoId: string;
-  numeroCelular: number;
+  numeroCelular: string;
   direccion: string;
   eps: string;
   arl: string;
   correoElectronico: string;
   nombreContacto: string;
-  numeroContacto: number;
+  numeroContacto: string;
   disponibilidades: Array<Disponibilidad>;
 
   constructor(
     id: string,
     nombre: string,
     tipoId: string,
-    numeroCelular: number,
+    numeroCelular: string,
     direccion: string,
     eps: string,
     arl: string,
     correoElectronico: string,
     nombreContacto: string,
-    numeroContacto: number,
+    numeroContacto: string,
     disponibilidades: Array<Disponibilidad>
   ) {
     this.id = id;
