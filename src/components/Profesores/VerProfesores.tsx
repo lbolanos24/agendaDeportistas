@@ -8,34 +8,68 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ServicioProfesores } from "../../services/ServicioProfesores";
 import { Profesor } from "../../models/Profesor";
 
 type Props = {
-  isSubmitting: boolean;
-  setIsNewElement: (element: boolean) => void;
+  onNewProfesorClick: (element: boolean) => void;
+  onSelect: (profesor: Profesor) => void;
+  isEditing: boolean;
   servicioProfesores: ServicioProfesores;
 };
 
-function VerCursos(props: Props) {
+function VerProfesores(props: Props) {
   const [isEliminated, setIsEliminated] = useState(false);
+  const [profesores, setProfesores] = useState<Profesor[]>([]);
 
-  const profesores: Profesor[] =
-    props.servicioProfesores?.listarProfesores() || [];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await props.servicioProfesores.obtenerProfesores();
+        setProfesores(data);
+      } catch (error) {
+        console.error("Error fetching Profesores:", error);
+      }
+    };
+    console.log("CARGANDO DATOS...");
+    fetchData();
+  }, [props.isEditing]);
 
-  const handleClick = (event: boolean) => {
-    props.setIsNewElement(event);
+  const handleClick = () => {
+    props.onNewProfesorClick(true);
   };
 
-  const handleClickVer = (event: boolean) => {
-    //TODO
-    props.setIsNewElement(event);
+  const handleClickVer = (id: String) => {
+    const ubicacionSelected = profesores.find((profesor) => profesor.id === id);
+    // Se selecciona el deportista para ver sus detalles o editarlos
+    if (ubicacionSelected != null) {
+      props.onSelect(ubicacionSelected);
+    }
   };
-  const handleClickEliminar = (id: number) => {
-    props.servicioProfesores.eliminarProfesores(id);
+
+  const handleClickEliminar = (id: string) => {
+    props.servicioProfesores.eliminarProfesor(id);
+
     //Actualizar la vista
+    setProfesores(profesores.filter((d) => d.id !== id));
+
     setIsEliminated(!isEliminated);
+  };
+
+  // Formatear la fecha en un formato legible
+  const formatDate = (date: string) => {
+    const fecha = new Date(date);
+    if (isNaN(fecha.getTime())) {
+      return "Fecha inválida";
+    }
+    //console.log("FECHA: " + fecha);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return fecha.toLocaleDateString(undefined, options);
   };
 
   return (
@@ -43,10 +77,9 @@ function VerCursos(props: Props) {
       <Button
         mt={4}
         colorScheme="blue"
-        isLoading={props.isSubmitting}
         type="submit"
         margin={"20px"}
-        onClick={() => handleClick(true)}
+        onClick={() => handleClick()}
         className="buttonSombreado"
       >
         Agregar Nuevo
@@ -72,14 +105,26 @@ function VerCursos(props: Props) {
           <Tbody>
             {profesores.map((profesor) => (
               <Tr key={profesor.id}>
-                <Td style={{ border: "1px solid black" }}>
-                  {profesor.nombre}
-                </Td>
+                <Td style={{ border: "1px solid black" }}>{profesor.nombre}</Td>
                 <Td style={{ border: "1px solid black" }}>
                   {profesor.numeroCelular}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {profesor.getDisponibilidades()}
+                  {profesor.disponibilidades?.map((disponibilidad) => (
+                    <div key={disponibilidad.id}>
+                      {disponibilidad.diaDisponibilidad}
+                      {": "}
+                      {disponibilidad.horaInicioDisponibilidad > 12
+                        ? disponibilidad.horaInicioDisponibilidad - 12 + "pm."
+                        : disponibilidad.horaInicioDisponibilidad + "am."}
+                      {" - "}
+                      {disponibilidad.horaFinDisponibilidad > 12
+                        ? disponibilidad.horaFinDisponibilidad - 12 + "pm."
+                        : disponibilidad.horaFinDisponibilidad + "am."}
+                      <br />
+                      <br />
+                    </div>
+                  ))}
                 </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
                   <Button
@@ -108,4 +153,4 @@ function VerCursos(props: Props) {
   );
 }
 
-export default VerCursos;
+export default VerProfesores;

@@ -13,11 +13,18 @@ import {
 import { useState, useEffect } from "react";
 import { ServicioUbicaciones } from "../../services/ServicioUbicaciones";
 import { Ubicacion } from "../../models/Ubicacion";
+import { Disponibilidad } from "../../models/Disponibilidad";
+import DateTimePicker from "../Controles/DateTimePicker";
+import VerDisponibilidades from "../Disponibilidades/VerDisponibilidades";
+import EditarDisponibilidad from "../Disponibilidades/EditarDisponibilidad";
+import Telefono from "../Controles/Telefono";
 
 type Props = {
-  isSubmitting: boolean;
-  setIsNewElement: (element: boolean) => void;
+  setIsEditing: (element: boolean) => void;
   servicioUbicaciones: ServicioUbicaciones;
+  ubicacionSelected: Ubicacion;
+  isNewUbicacion: boolean;
+  onSaveUbicacion: (element: boolean) => void;
 };
 
 function EditarUbicaciones(props: Props) {
@@ -25,42 +32,160 @@ function EditarUbicaciones(props: Props) {
   const [direccion, setDireccionUbicacion] = useState("");
   const [telefono, setTelefonoUbicacion] = useState("");
   const [nombreContacto, setNombreContactoUbicacion] = useState("");
-  const [fechaInicioContrato, setFechaInicioContratoUbicacion] = useState("");
-  const [fechaFinContrato, setFechaFinContratoUbicacion] = useState("");
-  //TODO: disponibilidad
-  const [isNewElement, setIsNewElement] = useState(false);
-  const [opciones, setOpciones] = useState<{ id: string; value: string }[]>([]);
+  const [fechaInicioContrato, setFechaInicioContratoUbicacion] = useState(
+    new Date()
+  );
+  const [fechaFinContrato, setFechaFinContratoUbicacion] = useState(new Date());
+  const [disponibilidades, setDisponibilidades] = useState<Disponibilidad[]>(
+    []
+  );
+  const [isDisponibilidadsOpen, setIsDisponibilidadsOpen] = useState(false);
+  const [disponibilidadSelected, setDisponibilidadSelected] =
+    useState<Disponibilidad>(new Disponibilidad(0, "", 0, 0));
+  const [isNewDisponibilidad, setIsNewDisponibilidad] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+    const isValid =
+      nombre !== "" &&
+      direccion !== "" &&
+      telefono !== "" &&
+      nombreContacto !== "" &&
+      fechaInicioContrato !== null &&
+      fechaFinContrato !== null &&
+      disponibilidades.length > 0;
+    setIsFormValid(isValid);
+  }, [
+    nombre,
+    direccion,
+    telefono,
+    nombreContacto,
+    fechaInicioContrato,
+    fechaFinContrato,
+    disponibilidades,
+  ]);
+
+  useEffect(() => {
+    if (props.ubicacionSelected) {
+      setNombreUbicacion(props.ubicacionSelected.nombre);
+      setDireccionUbicacion(props.ubicacionSelected.direccion);
+      setTelefonoUbicacion(props.ubicacionSelected.telefono);
+      setNombreContactoUbicacion(props.ubicacionSelected.nombreContacto);
+      setFechaInicioContratoUbicacion(
+        props.ubicacionSelected.fechaInicioContrato
+      );
+      setFechaFinContratoUbicacion(props.ubicacionSelected.fechaFinContrato);
+      if (props.isNewUbicacion) {
+        setDisponibilidades([]);
+      } else {
+        setDisponibilidades(props.ubicacionSelected.disponibilidades);
+      }
+    }
+  }, [props.ubicacionSelected]);
 
   const handleClickCancelar = (event: boolean) => {
-    props.setIsNewElement(event);
+    props.setIsEditing(event);
   };
 
   //evento para guardar los datos capturados en pantalla
-  const handleClickGuardar = (event: boolean) => {
+  const handleClickGuardar = async (event: boolean) => {
     // Crear el objeto
     const nuevaUbicacion = new Ubicacion(
-      props.servicioUbicaciones.obtenerSiguienteId() || 1,
-      id,
+      1,
       nombre,
       direccion,
       telefono,
       nombreContacto,
+      true,
       fechaInicioContrato,
       fechaFinContrato,
-      disponibilidad
+      disponibilidades
     );
 
     // Se envian los datos capturados a una base de datos
-    console.log(nuevaUbicacion);
+    //console.log(nuevaUbicacion);
+    let response = null;
 
-    props.servicioUbicaciones?.agregarUbicacion(nuevaUbicacion);
-    props.setIsNewElement(event);
+    if (props.isNewUbicacion) {
+      response = await props.servicioUbicaciones?.crearUbicacion(
+        nuevaUbicacion
+      );
+    } else {
+      response = await props.servicioUbicaciones?.actualizarUbicacion(
+        nuevaUbicacion
+      );
+    }
+
+    props.onSaveUbicacion(true);
   };
+
+  function handleClickDisponibilidades(id: number, isNew: boolean): void {
+    if (!isNew) {
+      if (disponibilidades.length > 0) {
+        const disponibilidad = disponibilidades.find(
+          (disponibilidad) => disponibilidad.id === id
+        );
+        if (disponibilidad) {
+          setDisponibilidadSelected(disponibilidad);
+        }
+      } else {
+        console.error("No Disponibilidades found.");
+      }
+    } else {
+      setDisponibilidadSelected(new Disponibilidad(0, "", 6, 12));
+    }
+
+    setIsDisponibilidadsOpen(true);
+    setIsNewDisponibilidad(isNew);
+  }
+
+  const handleCloseModal = () => {
+    setIsDisponibilidadsOpen(false);
+  };
+
+  function handleSaveDisponibilidad(disponibilidad: Disponibilidad): void {
+    if (disponibilidad !== null) {
+      console.log(disponibilidad);
+      if (isNewDisponibilidad) {
+        disponibilidades.push(disponibilidad);
+      } else {
+        const index = disponibilidades.findIndex(
+          (disp) => disp.id == disponibilidad.id
+        );
+        if (index > -1) {
+          disponibilidades[index] = disponibilidad;
+        } else {
+          console.error("Disponibilidad not found.");
+        }
+      }
+
+      setDisponibilidades(disponibilidades);
+    }
+
+    setIsDisponibilidadsOpen(false);
+  }
+
+  function handlerDeleteDisponibilidad(id: number): void {
+    setDisponibilidades(disponibilidades.filter((ac) => ac.id !== id));
+  }
 
   return (
     <>
+      <EditarDisponibilidad
+        onSave={handleSaveDisponibilidad}
+        disponibilidadSeleccionada={disponibilidadSelected}
+        isEditarDisponibilidadOpen={isDisponibilidadsOpen}
+        onClose={handleCloseModal}
+        isNewElement={isNewDisponibilidad}
+        idProximaDisponibilidad={
+          isNewDisponibilidad
+            ? disponibilidades.length == 0
+              ? 1
+              : disponibilidades[disponibilidades.length - 1].id + 1
+            : disponibilidadSelected.id
+        }
+      ></EditarDisponibilidad>
       <Grid
-        h="300px"
         templateRows="repeat(2, 1fr)"
         templateColumns="repeat(4, 1fr)"
         gap={4}
@@ -71,79 +196,96 @@ function EditarUbicaciones(props: Props) {
           <FormControl isRequired>
             <FormLabel>Nombre Ubicación</FormLabel>
             <Input
+              value={nombre}
               placeholder="Digite el nombre de la Ubicación"
               onChange={(e) => setNombreUbicacion(e.target.value)}
             />
-            </FormControl>
+          </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
             <FormLabel>Dirección</FormLabel>
             <Input
+              value={direccion}
               placeholder="Digite la dirección de la Ubicación"
               onChange={(e) => setDireccionUbicacion(e.target.value)}
             />
-            </FormControl>
+          </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
-            <FormLabel>Télefono</FormLabel>
-            <Input
-              placeholder="Digite el télefono de la Ubicación"
-              onChange={(e) => setTelefonoUbicacion(e.target.value)}
-            />
-            </FormControl>
+            <Telefono
+              numeroCelular={Number(telefono)}
+              setNumeroCelular={(telefono) =>
+                setTelefonoUbicacion(telefono.toString())
+              }
+              isRequired={true}
+              label={"Teléfono"}
+              maxLength={10}
+            ></Telefono>
+          </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
             <FormLabel>Contacto</FormLabel>
             <Input
+              value={nombreContacto}
               placeholder="Digite del contacto para ésta Ubicación"
               onChange={(e) => setNombreContactoUbicacion(e.target.value)}
             />
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
-          <FormControl>
-            <FormLabel>Fecha inicio de contrato</FormLabel>
-            <Input
-              placeholder="Ingrese la fecha de inicio del contrato para la Ubicación"
-              onChange={(e) => setFechaInicioContratoUbicacion(e.target.value)}
-            />
+          <DateTimePicker
+            fechaNacimiento={fechaInicioContrato}
+            setFechaNacimiento={setFechaInicioContratoUbicacion}
+            isRequired={true}
+            label={"Fecha inicio de contrato"}
+          />
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+          <DateTimePicker
+            fechaNacimiento={fechaFinContrato}
+            setFechaNacimiento={setFechaFinContratoUbicacion}
+            isRequired={true}
+            label={"Fecha finalización del contrato"}
+          />
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={4}>
+          <FormControl isRequired>
+            <FormLabel>Disponibilidades</FormLabel>
+            <VerDisponibilidades
+              onDelete={handlerDeleteDisponibilidad}
+              onClick={handleClickDisponibilidades}
+              disponibilidades={disponibilidades}
+            ></VerDisponibilidades>
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
-          <FormControl>
-            <FormLabel>Fecha finalización de contrato</FormLabel>
-            <Input
-              placeholder="Ingrese la fecha de finalización del contrato para la Ubicación"
-              onChange={(e) => setFechaFinContratoUbicacion(e.target.value)}
-            />
-          </FormControl>
+          <Button
+            className="buttonSombreado"
+            mt={4}
+            colorScheme="blue"
+            type="submit"
+            margin={"30px"}
+            onClick={() => handleClickCancelar(false)}
+          >
+            Cancelar
+          </Button>
         </GridItem>
-      </Grid>
-      <Grid templateColumns="repeat(6, 1fr)">
-        <Button
-          className="buttonSombreado"
-          mt={4}
-          colorScheme="blue"
-          isLoading={props.isSubmitting}
-          type="submit"
-          margin={"30px"}
-          onClick={() => handleClickCancelar(false)}
-        >
-          Cancelar
-        </Button>
-        <Button
-          className="buttonSombreado"
-          mt={4}
-          isLoading={props.isSubmitting}
-          type="submit"
-          margin={"30px"}
-          onClick={() => handleClickGuardar(false)}
-        >
-          Guardar
-        </Button>
+        <GridItem rowSpan={1} colSpan={1}>
+          <Button
+            colorScheme={isFormValid ? "blue" : "gray"}
+            className="buttonSombreado"
+            mt={4}
+            type="submit"
+            margin={"30px"}
+            onClick={() => handleClickGuardar(false)}
+            isDisabled={!isFormValid}
+          >
+            Guardar
+          </Button>
+        </GridItem>
       </Grid>
     </>
   );

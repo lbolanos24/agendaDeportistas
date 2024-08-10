@@ -13,6 +13,7 @@ import {
   Image,
   extendTheme,
   Textarea,
+  FormHelperText,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
@@ -35,18 +36,9 @@ type Props = {
   servicioDeportistas: ServicioDeportistas;
   deportistaSelected: Deportista;
   isNewDeportista: boolean;
-};
-
-const acudienteVacio = {
-  id: "",
-  tipoId: "",
-  nombre: "",
-  direccion: "",
-  numeroCelular: 0,
-  correoElectronico: "",
-  imagenPropia: false,
-  profesionEmpresa: "",
-  parentesco: "",
+  fotoDeportistaActual: string;
+  fotoDocumentoActual: string;
+  onSaveDeportista: (element: boolean) => void;
 };
 
 function EditarDeportistas(props: Props) {
@@ -70,17 +62,61 @@ function EditarDeportistas(props: Props) {
   const [comprobanteInscripcion, setComprobanteInscripcion] =
     useState<boolean>(false);
   const [acudientes, setAcudientes] = useState<Acudiente[]>([]);
-  const [fotoDeportista, setFotoDeportista] = useState<ImageBitmap | null>(
-    null
-  );
-  const [fotoDocumento, setFotoDocumento] = useState<ImageBitmap | null>(null);
+  const [fotoDeportista, setFotoDeportista] = useState<File | null>(null);
+  const [fotoDocumento, setFotoDocumento] = useState<File | null>(null);
   const [fotoDeportistaUrl, setFotoDeportistaUrl] = useState<string>("");
   const [fotoDocumentoUrl, setFotoDocumentoUrl] = useState<string>("");
-  const [opciones, setOpciones] = useState<{ id: string; value: string }[]>([]);
   const [isAcudientesOpen, setIsAcudientesOpen] = useState(false);
-  const [acudienteSelected, setAcudienteSelected] =
-    useState<Acudiente>(acudienteVacio);
+  const [acudienteSelected, setAcudienteSelected] = useState<Acudiente>({
+    id: "0",
+    tipoId: "",
+    nombre: "",
+    direccion: "",
+    numeroCelular: 0,
+    correoElectronico: "",
+    imagenPropia: false,
+    profesionEmpresa: "",
+    parentesco: "",
+  });
   const [isNewAcudiente, setIsNewAcudiente] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const isValid =
+      nombre !== "" &&
+      tipoId !== "" &&
+      id !== "" &&
+      edad > 0 &&
+      direccion !== "" &&
+      eps !== "" &&
+      institucionEducativa !== "" &&
+      imagenPropia !== null &&
+      informacionMensualidad !== null &&
+      informacionReposicion !== null &&
+      informacionVacaciones !== null &&
+      comprobanteInscripcion !== null &&
+      acudientes.length > 0 &&
+      fotoDeportista !== undefined &&
+      fotoDocumento !== undefined;
+    setIsFormValid(isValid);
+  }, [
+    id,
+    nombre,
+    edad,
+    tipoId,
+    eps,
+    institucionEducativa,
+    grado,
+    imagenPropia,
+    informacionMensualidad,
+    informacionReposicion,
+    informacionVacaciones,
+    comprobanteInscripcion,
+    acudientes,
+    fotoDeportista,
+    fotoDocumento,
+  ]);
 
   useEffect(() => {
     if (props.deportistaSelected) {
@@ -95,10 +131,6 @@ function EditarDeportistas(props: Props) {
       setGrado(props.deportistaSelected.grado);
       setCondicionImportante(props.deportistaSelected.condicionImportante);
       setImagenPropia(props.deportistaSelected.imagenPropia);
-      setFotoDeportista(props.deportistaSelected.fotoDeportista);
-      setFotoDocumento(props.deportistaSelected.fotoDocumento);
-      setFotoDeportistaUrl(props.deportistaSelected.fotoDeportistaUrl);
-      setFotoDocumentoUrl(props.deportistaSelected.fotoDocumentoUrl);
       setInformacionMensualidad(
         props.deportistaSelected.informacionMensualidad
       );
@@ -107,7 +139,11 @@ function EditarDeportistas(props: Props) {
       setComprobanteInscripcion(
         props.deportistaSelected.comprobanteInscripcion
       );
-      setAcudientes(props.deportistaSelected.acudientes);
+      if (props.isNewDeportista) {
+        setAcudientes([]);
+      } else {
+        setAcudientes(props.deportistaSelected.acudientes);
+      }
     }
   }, [props.deportistaSelected]);
 
@@ -116,7 +152,7 @@ function EditarDeportistas(props: Props) {
   };
 
   //evento para guardar los datos capturados en pantalla
-  const handleClickGuardar = (event: boolean) => {
+  const handleClickGuardar = async (event: boolean) => {
     // Crear el objeto
     const nuevoDeportista = new Deportista(
       id,
@@ -130,8 +166,8 @@ function EditarDeportistas(props: Props) {
       grado,
       condicionImportante,
       imagenPropia,
-      fotoDeportista,
-      fotoDocumento,
+      "",
+      "",
       fotoDeportistaUrl,
       fotoDocumentoUrl,
       informacionMensualidad,
@@ -142,30 +178,57 @@ function EditarDeportistas(props: Props) {
     );
 
     // Se envian los datos capturados a una base de datos
-    console.log(nuevoDeportista);
+    //console.log(nuevoDeportista);
+    let response = null;
 
-    props.servicioDeportistas?.agregarDeportista(nuevoDeportista);
-    props.setIsEditing(false);
+    if (props.isNewDeportista) {
+      response = await props.servicioDeportistas?.crearDeportista(
+        nuevoDeportista,
+        fotoDeportista,
+        fotoDocumento
+      );
+    } else {
+      response = await props.servicioDeportistas?.actualizarDeportista(
+        nuevoDeportista,
+        fotoDeportista,
+        fotoDocumento
+      );
+    }
+
+    props.onSaveDeportista(true);
   };
 
   const handleFileChange = async (
     nombre: string,
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
-    if (file) {
+    const files = event.target.files;
+    if (files) {
       try {
-        const imageBitmap = await createImageBitmap(file);
-        if (nombre == "Documento") {
-          setFotoDocumento(imageBitmap);
+        const file = files[0];
+        // Verificar el tipo de archivo
+        const validTypes = ["image/jpeg", "image/bmp"];
+        if (!validTypes.includes(file.type)) {
+          setErrorMessage("Solo se permiten archivos JPG y BMP.");
+          return;
+        }
 
+        // Verificar el tamaño del archivo
+        const maxSizeInBytes = 800 * 1024; // 500KB
+        if (file.size > maxSizeInBytes) {
+          setErrorMessage("El archivo no debe exceder los 800KB.");
+          return;
+        }
+
+        // Si pasa ambas validaciones, procede con el manejo del archivo
+        setErrorMessage("");
+        if (nombre == "Documento") {
+          setFotoDocumento(file);
           // Crear una URL para la vista previa
           const fotoDocumentoUrl = URL.createObjectURL(file);
           setFotoDocumentoUrl(fotoDocumentoUrl);
         } else {
-          setFotoDeportista(imageBitmap ?? null);
-
-          // Crear una URL para la vista previa
+          setFotoDeportista(file); // Crear una URL para la vista previa
           const fotoDeportistaUrl = URL.createObjectURL(file);
           setFotoDeportistaUrl(fotoDeportistaUrl);
         }
@@ -186,7 +249,17 @@ function EditarDeportistas(props: Props) {
         console.error("No acudientes found.");
       }
     } else {
-      setAcudienteSelected(acudienteVacio);
+      setAcudienteSelected({
+        id: "0",
+        tipoId: "",
+        nombre: "",
+        direccion: "",
+        numeroCelular: 0,
+        correoElectronico: "",
+        imagenPropia: false,
+        profesionEmpresa: "",
+        parentesco: "",
+      });
     }
 
     setIsAcudientesOpen(true);
@@ -205,13 +278,12 @@ function EditarDeportistas(props: Props) {
         const index = acudientes.findIndex((ac) => ac.id === acudiente.id);
         if (index > -1) {
           acudientes[index] = acudiente;
-          if (!props.isNewDeportista) {
-            // TODO guardar el acudiente en la BD
-          }
         } else {
           console.error("Acudiente not found.");
         }
       }
+
+      setAcudientes(acudientes);
     }
 
     setIsAcudientesOpen(false);
@@ -265,6 +337,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Numero de Identificación</FormLabel>
             <Input
+              readOnly={!props.isNewDeportista}
               value={id}
               placeholder="Digite el numero de Identificación"
               onChange={(e) => setId(e.target.value)}
@@ -339,10 +412,7 @@ function EditarDeportistas(props: Props) {
             <VerAcudientes
               onDelete={handlerDeleteAcudiente}
               onClick={handleClickAcudientes}
-              servicioDeportistas={props.servicioDeportistas}
-              idDeportista={id}
               acudientes={acudientes}
-              isNewDeportista={props.isNewDeportista}
             ></VerAcudientes>
           </FormControl>
         </GridItem>
@@ -456,12 +526,25 @@ function EditarDeportistas(props: Props) {
                 handleFileChange("Deportista", e);
               }}
             />
-            {fotoDeportistaUrl && (
+            {errorMessage && (
+              <FormHelperText color="red.500">{errorMessage}</FormHelperText>
+            )}
+            {fotoDeportistaUrl != "" ? (
               <Box mt={4}>
                 <Image
                   src={fotoDeportistaUrl}
-                  alt="Preview"
-                  maxW="200px"
+                  alt="Sin Foto"
+                  maxW="400px"
+                  maxH="200px"
+                  borderRadius="md"
+                />
+              </Box>
+            ) : (
+              <Box mt={4}>
+                <Image
+                  src={`data:image/jpeg;base64,${props.fotoDeportistaActual}`}
+                  alt="Sin Foto"
+                  maxW="400px"
                   maxH="200px"
                   borderRadius="md"
                 />
@@ -479,11 +562,21 @@ function EditarDeportistas(props: Props) {
                 handleFileChange("Documento", e);
               }}
             />
-            {fotoDocumentoUrl && (
+            {fotoDocumentoUrl != "" ? (
               <Box mt={4}>
                 <Image
                   src={fotoDocumentoUrl}
-                  alt="Preview"
+                  alt="Sin Foto"
+                  maxW="400px"
+                  maxH="200px"
+                  borderRadius="md"
+                />
+              </Box>
+            ) : (
+              <Box mt={4}>
+                <Image
+                  src={`data:image/jpeg;base64,${props.fotoDocumentoActual}`}
+                  alt="Sin Foto"
                   maxW="400px"
                   maxH="200px"
                   borderRadius="md"
@@ -506,11 +599,13 @@ function EditarDeportistas(props: Props) {
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <Button
+            colorScheme={isFormValid ? "blue" : "gray"}
             className="buttonSombreado"
             mt={4}
             type="submit"
             margin={"30px"}
             onClick={() => handleClickGuardar(false)}
+            isDisabled={!isFormValid}
           >
             Guardar
           </Button>

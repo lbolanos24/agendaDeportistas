@@ -15,11 +15,12 @@ import {
   ModalHeader,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Acudiente } from "../../models/Acudiente";
 import Telefono from "../Controles/Telefono";
 import Email from "../Controles/Email";
 import { Constantes } from "../../models/Constantes";
+import { ServicioAcudientes } from "../../services/ServicioAcudientes";
 
 type Props = {
   acudienteSeleccionado: Acudiente;
@@ -41,6 +42,10 @@ function EditarAcudientes(props: Props) {
   const [profesionEmpresa, setProfesionEmpresa] = useState("");
   const [parentesco, setParentesco] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [acudiente, setAcudiente] = useState<Acudiente | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const servicioAcudientes = ServicioAcudientes.getInstancia();
 
   // Se carga los datos del acudiente seleccionado
   useEffect(() => {
@@ -77,6 +82,19 @@ function EditarAcudientes(props: Props) {
     parentesco,
   ]);
 
+  useEffect(() => {
+    if (acudiente) {
+      setNombreAcudiente(acudiente.nombre);
+      setTipoId(acudiente.tipoId);
+      setId(acudiente.id);
+      setNumeroCelular(acudiente.numeroCelular);
+      setDireccion(acudiente.direccion);
+      setCorreoElectronico(acudiente.correoElectronico);
+      setImagenPropia(acudiente.imagenPropia);
+      setProfesionEmpresa(acudiente.profesionEmpresa);
+    }
+  }, [acudiente]);
+
   //evento para guardar los datos capturados en pantalla
   const handleClickGuardar = () => {
     // TO DO Crear el objeto en base de datos
@@ -95,9 +113,25 @@ function EditarAcudientes(props: Props) {
     );
 
     // Se envian los datos capturados a una base de datos
-    console.log(nuevoAcudiente);
+    //console.log(nuevoAcudiente);
 
     props.onSave(nuevoAcudiente);
+  };
+
+  const handlerChangeId = async (e: ChangeEvent<HTMLInputElement>) => {
+    setId(e.target.value);
+    if (e.target.value.length > 5) {
+      // Empieza a buscar después de 5 caracteres
+      setLoading(true);
+      const acudiente = await servicioAcudientes.obtenerAcudiente(
+        e.target.value
+      );
+
+      if (acudiente != null) {
+        setAcudiente(acudiente);
+      }
+      setLoading(false);
+    }
   };
 
   return (
@@ -132,16 +166,6 @@ function EditarAcudientes(props: Props) {
             >
               <GridItem rowSpan={1} colSpan={1}>
                 <FormControl isRequired>
-                  <FormLabel>Nombre Acudiente</FormLabel>
-                  <Input
-                    value={nombre}
-                    placeholder="Digite el nombre del Acudiente"
-                    onChange={(e) => setNombreAcudiente(e.target.value)}
-                  />
-                </FormControl>
-              </GridItem>
-              <GridItem rowSpan={1} colSpan={1}>
-                <FormControl isRequired>
                   <FormLabel>Tipo de identificación</FormLabel>
                   <Select
                     value={tipoId}
@@ -159,7 +183,18 @@ function EditarAcudientes(props: Props) {
                   <Input
                     value={id}
                     placeholder="Digite el numero de Identificación"
-                    onChange={(e) => setId(e.target.value)}
+                    onChange={handlerChangeId}
+                  />
+                </FormControl>
+                {loading && <p>Cargando...</p>}
+              </GridItem>
+              <GridItem rowSpan={1} colSpan={1}>
+                <FormControl isRequired>
+                  <FormLabel>Nombre Acudiente</FormLabel>
+                  <Input
+                    value={nombre}
+                    placeholder="Digite el nombre del Acudiente"
+                    onChange={(e) => setNombreAcudiente(e.target.value)}
                   />
                 </FormControl>
               </GridItem>

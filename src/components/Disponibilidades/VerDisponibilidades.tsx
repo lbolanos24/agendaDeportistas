@@ -9,21 +9,20 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { Acudiente } from "../../models/Acudiente";
-import { ServicioDeportistas } from "../../services/ServicioDeportistas";
+import { Disponibilidad } from "../../models/Disponibilidad";
 
 type Props = {
-  onClick: (id: string, isNew: boolean) => void;
-  onDelete: (id: string) => void;
-  acudientes: Array<Acudiente>;
+  onClick: (id: number, isNew: boolean) => void;
+  onDelete: (id: number) => void;
+  disponibilidades: Array<Disponibilidad>;
 };
 
-function VerAcudientes(props: Props) {
-  const handleClick = (id: string, isNew: boolean) => {
+function VerDisponibilidades(props: Props) {
+  const handleClick = (id: number, isNew: boolean) => {
     props.onClick(id, isNew);
   };
 
-  const handleClickEliminar = (id: string) => {
+  const handleClickEliminar = (id: number) => {
     //Actualizar la vista
     props.onDelete(id);
   };
@@ -35,24 +34,24 @@ function VerAcudientes(props: Props) {
         colorScheme="blue"
         type="submit"
         margin={"20px"}
-        onClick={() => handleClick("", true)}
+        onClick={() => handleClick(0, true)}
         className="buttonSombreado"
       >
         +
       </Button>
-      {props.acudientes != null && props.acudientes.length > 0 ? (
+      {props.disponibilidades != null && props.disponibilidades.length > 0 ? (
         <TableContainer m={"20px"}>
           <Table size="sm" variant="striped" colorScheme="blue">
             <Thead>
               <Tr>
                 <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                  Nombre
+                  Dia de la semana
                 </Th>
                 <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                  Celular
+                  Hora Inicio
                 </Th>
                 <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                  Correo
+                  Hora Fin
                 </Th>
                 <Th style={{ textAlign: "center", border: "1px solid black" }}>
                   Opciones
@@ -60,16 +59,20 @@ function VerAcudientes(props: Props) {
               </Tr>
             </Thead>
             <Tbody>
-              {props.acudientes.map((acudiente) => (
-                <Tr key={acudiente.id}>
+              {props.disponibilidades.map((disponibilidad) => (
+                <Tr key={disponibilidad.id}>
                   <Td style={{ border: "1px solid black" }}>
-                    {acudiente.nombre}
+                    {disponibilidad.diaDisponibilidad}
                   </Td>
                   <Td style={{ border: "1px solid black" }}>
-                    {acudiente.numeroCelular}
+                    {disponibilidad.horaInicioDisponibilidad > 12
+                      ? disponibilidad.horaInicioDisponibilidad - 12 + "pm."
+                      : disponibilidad.horaInicioDisponibilidad + "am."}
                   </Td>
                   <Td style={{ border: "1px solid black" }}>
-                    {acudiente.correoElectronico}
+                    {disponibilidad.horaFinDisponibilidad > 12
+                      ? disponibilidad.horaFinDisponibilidad - 12 + "pm."
+                      : disponibilidad.horaFinDisponibilidad + "am."}
                   </Td>
                   <Td
                     style={{ textAlign: "center", border: "1px solid black" }}
@@ -78,7 +81,7 @@ function VerAcudientes(props: Props) {
                       colorScheme="blue"
                       size="sm"
                       className="buttonSombreado"
-                      onClick={() => handleClick(acudiente.id, false)}
+                      onClick={() => handleClick(disponibilidad.id, false)}
                     >
                       Ver
                     </Button>
@@ -86,7 +89,7 @@ function VerAcudientes(props: Props) {
                       colorScheme="blue"
                       size="sm"
                       className="buttonSombreado"
-                      onClick={() => handleClickEliminar(acudiente.id)}
+                      onClick={() => handleClickEliminar(disponibilidad.id)}
                     >
                       Eliminar
                     </Button>
@@ -103,4 +106,4 @@ function VerAcudientes(props: Props) {
   );
 }
 
-export default VerAcudientes;
+export default VerDisponibilidades;

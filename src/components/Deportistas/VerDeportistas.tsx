@@ -7,27 +7,63 @@ import {
   Tr,
   Td,
   Button,
-  Box,
   Image,
   Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
 import { Deportista } from "../../models/Deportista";
+import React from "react";
 
 type Props = {
   onNewDeportistaClick: (element: boolean) => void;
   servicioDeportistas: ServicioDeportistas;
   onSelect: (deportista: Deportista) => void;
+  isEditing: boolean;
 };
 
 function VerDeportistas(props: Props) {
   const [isEliminated, setIsEliminated] = useState(false);
   const [deportistas, setDeportistas] = useState<Deportista[]>([]);
+  const [fotos, setFotos] = useState<Record<string, string>>({});
+
+  //al cargar el formulario se deben obtener los cursos usando el servicioCursos
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await props.servicioDeportistas.obtenerDeportistas();
+        setDeportistas(data);
+      } catch (error) {
+        console.error("Error fetching deportistas:", error);
+      }
+    };
+    console.log("CARGANDO DATOS...");
+    fetchData();
+  }, [props.isEditing]);
 
   useEffect(() => {
-    setDeportistas(props.servicioDeportistas.listarDeportistas());
-  }, [setDeportistas]);
+    const fetchFotos = async () => {
+      try {
+        const fotosData: Record<string, string> = {};
+        for (let deportista of deportistas) {
+          const response =
+            await props.servicioDeportistas.obtenerFotoDeportista(
+              deportista.id
+            );
+
+          fotosData[deportista.id] = `data:image/jpeg;base64,${response}`;
+        }
+
+        setFotos(fotosData);
+      } catch (error) {
+        console.error("Error fetching fotos", error);
+      }
+    };
+
+    if (deportistas.length > 0) {
+      fetchFotos();
+    }
+  }, [deportistas]);
 
   const handleClick = () => {
     props.onNewDeportistaClick(true);
@@ -51,6 +87,21 @@ function VerDeportistas(props: Props) {
     setDeportistas(deportistas.filter((d) => d.id !== id));
 
     setIsEliminated(!isEliminated);
+  };
+
+  // Formatear la fecha en un formato legible
+  const formatDate = (date: string) => {
+    const fecha = new Date(date);
+    if (isNaN(fecha.getTime())) {
+      return "Fecha inválida";
+    }
+    //console.log("FECHA: " + fecha);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return fecha.toLocaleDateString(undefined, options);
   };
 
   return (
@@ -97,37 +148,35 @@ function VerDeportistas(props: Props) {
               <Tr key={deportista.id}>
                 <Td style={{ border: "1px solid black" }}>
                   <Center mt={4}>
-                    <Image
-                      border={
-                        deportista.imagenPropia
-                          ? "4px solid green"
-                          : "4px solid red"
-                      }
-                      src={deportista.fotoDeportistaUrl}
-                      alt="Preview"
-                      maxW="200px"
-                      maxH="200px"
-                      borderRadius="md"
-                    />
+                    {fotos[deportista.id] ? (
+                      <img
+                        src={fotos[deportista.id]}
+                        alt="Foto Documento"
+                        width="100"
+                      />
+                    ) : (
+                      "Cargando..."
+                    )}
                   </Center>
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
                   {deportista.nombre}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {deportista.fechaNacimiento.toLocaleDateString()}
+                  {formatDate(deportista.fechaNacimiento.toString())}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>{deportista.edad}</Td>
                 <Td style={{ border: "1px solid black" }}>
                   {deportista.tipoId}:{deportista.id}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {deportista.acudientes
-                    ?.map(
-                      (acudiente) =>
-                        `${acudiente.nombre} ${acudiente.numeroCelular} `
-                    )
-                    .join(" , ")}
+                  {deportista.acudientes?.map((acudiente) => (
+                    <div key={acudiente.id}>
+                      {acudiente.nombre} {acudiente.numeroCelular}
+                      <br />
+                      <br />
+                    </div>
+                  ))}
                 </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
                   <Button

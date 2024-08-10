@@ -13,8 +13,8 @@ export class Deportista {
   grado: number;
   condicionImportante: string;
   imagenPropia: boolean;
-  fotoDeportista: ImageBitmap | null;
-  fotoDocumento: ImageBitmap | null;
+  fotoDeportista: string;
+  fotoDocumento: string;
   fotoDeportistaUrl: string;
   fotoDocumentoUrl: string;
   //aceptacion de terminos se da por el acudiente pero se mira en la pantalla del deportista
@@ -36,8 +36,8 @@ export class Deportista {
     grado: number,
     condicionImportante: string,
     imagenPropia: boolean,
-    fotoDeportista: ImageBitmap | null,
-    fotoDocumento: ImageBitmap | null,
+    fotoDeportista: string,
+    fotoDocumento: string,
     fotoDeportistaUrl: string,
     fotoDocumentoUrl: string,
     informacionMensualidad: boolean,

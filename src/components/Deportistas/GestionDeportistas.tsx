@@ -20,8 +20,8 @@ const deportistaVacio = {
   grado: 0,
   condicionImportante: "",
   imagenPropia: false,
-  fotoDeportista: null,
-  fotoDocumento: null,
+  fotoDeportista: "",
+  fotoDocumento: "",
   fotoDeportistaUrl: "",
   fotoDocumentoUrl: "",
   informacionMensualidad: false,
@@ -36,19 +36,50 @@ function GestionDeportistas(props: Props) {
   const [isNewDeportista, setIsNewDeportista] = useState(false);
   const [deportistaSelected, setDeportistaSelected] =
     useState<Deportista>(deportistaVacio);
+  const [fotoDeportista, setFotoDeportista] = useState<string>("");
+  const [fotoDocumento, setFotoDocumento] = useState<string>("");
 
   const servicioDeportistas = ServicioDeportistas.getInstancia();
 
   function handleSelectDeportista(deportistaSelected: Deportista): void {
     setDeportistaSelected(deportistaSelected);
-    setIsEditing(true);
-    setIsNewDeportista(false);
   }
+
+  useEffect(() => {
+    const fetchFotos = async () => {
+      try {
+        const response = await servicioDeportistas.obtenerFotoDeportista(
+          deportistaSelected.id
+        );
+        setFotoDeportista(response);
+
+        const response2 = await servicioDeportistas.obtenerFotoDocumento(
+          deportistaSelected.id
+        );
+        setFotoDocumento(response2);
+
+        setIsEditing(true);
+        setIsNewDeportista(false);
+      } catch (error) {
+        console.error("Error fetching fotos", error);
+      }
+    };
+
+    if (deportistaSelected.id != "") {
+      fetchFotos();
+    }
+  }, [deportistaSelected]);
 
   function handleNewDeportistaClick(newItem: boolean): void {
     setIsNewDeportista(true);
     setIsEditing(true);
     setDeportistaSelected(deportistaVacio);
+    setFotoDeportista("");
+    setFotoDocumento("");
+  }
+
+  function handleSaveDeportista(newItem: boolean): void {
+    setIsEditing(false);
   }
 
   return (
@@ -65,6 +96,7 @@ function GestionDeportistas(props: Props) {
           onNewDeportistaClick={handleNewDeportistaClick}
           servicioDeportistas={servicioDeportistas}
           onSelect={handleSelectDeportista}
+          isEditing={isEditing}
         />
       ) : (
         <EditarDeportistas
@@ -72,6 +104,9 @@ function GestionDeportistas(props: Props) {
           servicioDeportistas={servicioDeportistas}
           deportistaSelected={deportistaSelected}
           isNewDeportista={isNewDeportista}
+          fotoDeportistaActual={fotoDeportista}
+          fotoDocumentoActual={fotoDocumento}
+          onSaveDeportista={handleSaveDeportista}
         />
       )}
     </>

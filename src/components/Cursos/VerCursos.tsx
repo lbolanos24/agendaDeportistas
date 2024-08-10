@@ -8,7 +8,7 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { ServicioCursos } from "../../services/servicioCursos";
+import { ServicioCursos } from "../../services/ServicioCursos";
 import { useEffect, useState } from "react";
 import { Curso } from "../../models/Curso";
 

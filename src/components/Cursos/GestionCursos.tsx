@@ -2,7 +2,7 @@ import { Text, Center } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import VerCursos from "./VerCursos";
 import EditarCursos from "./EditarCursos";
-import { ServicioCursos } from "../../services/servicioCursos";
+import { ServicioCursos } from "../../services/ServicioCursos";
 
 type Props = { titulo: string };
 
