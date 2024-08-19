@@ -11,6 +11,7 @@ import {
 import { ServicioCursos } from "../../services/ServicioCursos";
 import { useEffect, useState } from "react";
 import { Curso } from "../../models/Curso";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
   isSubmitting: boolean;
@@ -60,6 +61,7 @@ function VerCursos(props: Props) {
         margin={"20px"}
         onClick={() => handleClick(true)}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
         Agregar Nuevo
       </Button>
@@ -119,6 +121,7 @@ function VerCursos(props: Props) {
                     size="sm"
                     className="buttonSombreado"
                     onClick={() => handleClickEliminar(curso.idCurso)}
+                    leftIcon={<FaTrashAlt />}
                   >
                     Eliminar
                   </Button>

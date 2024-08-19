@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { ServicioProfesores } from "../../services/ServicioProfesores";
 import { Profesor } from "../../models/Profesor";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
   onNewProfesorClick: (element: boolean) => void;
@@ -81,6 +82,7 @@ function VerProfesores(props: Props) {
         margin={"20px"}
         onClick={() => handleClick()}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
         Agregar Nuevo
       </Button>
@@ -132,6 +134,8 @@ function VerProfesores(props: Props) {
                     size="sm"
                     className="buttonSombreado"
                     onClick={() => handleClickVer(profesor.id)}
+                    leftIcon={<FaEye />}
+                    style={{ marginRight: "8px" }}
                   >
                     Ver
                   </Button>
@@ -140,6 +144,7 @@ function VerProfesores(props: Props) {
                     size="sm"
                     className="buttonSombreado"
                     onClick={() => handleClickEliminar(profesor.id)}
+                    leftIcon={<FaTrashAlt />}
                   >
                     Eliminar
                   </Button>

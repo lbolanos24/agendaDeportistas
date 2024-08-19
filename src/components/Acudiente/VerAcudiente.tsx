@@ -8,9 +8,8 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { Acudiente } from "../../models/Acudiente";
-import { ServicioDeportistas } from "../../services/ServicioDeportistas";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
   onClick: (id: string, isNew: boolean) => void;
@@ -20,7 +19,11 @@ type Props = {
 
 function VerAcudientes(props: Props) {
   const handleClick = (id: string, isNew: boolean) => {
-    props.onClick(id, isNew);
+    if (props.acudientes.length < 2) {
+      props.onClick(id, isNew);
+    } else {
+      alert("Solo se puede agregar un máximo de 2 acudientes.");
+    }
   };
 
   const handleClickEliminar = (id: string) => {
@@ -37,8 +40,9 @@ function VerAcudientes(props: Props) {
         margin={"20px"}
         onClick={() => handleClick("", true)}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
-        +
+        Agregar Nuevo
       </Button>
       {props.acudientes != null && props.acudientes.length > 0 ? (
         <TableContainer m={"20px"}>
@@ -79,6 +83,8 @@ function VerAcudientes(props: Props) {
                       size="sm"
                       className="buttonSombreado"
                       onClick={() => handleClick(acudiente.id, false)}
+                      leftIcon={<FaEye />}
+                      style={{ marginRight: "8px" }}
                     >
                       Ver
                     </Button>
@@ -87,6 +93,7 @@ function VerAcudientes(props: Props) {
                       size="sm"
                       className="buttonSombreado"
                       onClick={() => handleClickEliminar(acudiente.id)}
+                      leftIcon={<FaTrashAlt />}
                     >
                       Eliminar
                     </Button>

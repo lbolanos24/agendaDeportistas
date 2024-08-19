@@ -5,10 +5,6 @@ import {
   Input,
   Grid,
   GridItem,
-  Select,
-  NumberInput,
-  NumberInputField,
-  Box,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ServicioUbicaciones } from "../../services/ServicioUbicaciones";
@@ -18,6 +14,7 @@ import DateTimePicker from "../Controles/DateTimePicker";
 import VerDisponibilidades from "../Disponibilidades/VerDisponibilidades";
 import EditarDisponibilidad from "../Disponibilidades/EditarDisponibilidad";
 import Telefono from "../Controles/Telefono";
+import { FaRegTimesCircle, FaSave } from "react-icons/fa";
 
 type Props = {
   setIsEditing: (element: boolean) => void;
@@ -269,6 +266,7 @@ function EditarUbicaciones(props: Props) {
             type="submit"
             margin={"30px"}
             onClick={() => handleClickCancelar(false)}
+            leftIcon={<FaRegTimesCircle />}
           >
             Cancelar
           </Button>
@@ -282,6 +280,7 @@ function EditarUbicaciones(props: Props) {
             margin={"30px"}
             onClick={() => handleClickGuardar(false)}
             isDisabled={!isFormValid}
+            leftIcon={<FaSave />}
           >
             Guardar
           </Button>

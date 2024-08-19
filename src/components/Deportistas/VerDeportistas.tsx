@@ -7,13 +7,12 @@ import {
   Tr,
   Td,
   Button,
-  Image,
   Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
 import { Deportista } from "../../models/Deportista";
-import React from "react";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
   onNewDeportistaClick: (element: boolean) => void;
@@ -113,6 +112,7 @@ function VerDeportistas(props: Props) {
         margin={"20px"}
         onClick={() => handleClick()}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
         Agregar Nuevo
       </Button>
@@ -184,6 +184,8 @@ function VerDeportistas(props: Props) {
                     size="sm"
                     className="buttonSombreado"
                     onClick={() => handleClickVer(deportista.id)}
+                    leftIcon={<FaEye />}
+                    style={{ marginRight: "8px" }}
                   >
                     Ver
                   </Button>
@@ -192,6 +194,7 @@ function VerDeportistas(props: Props) {
                     size="sm"
                     className="buttonSombreado"
                     onClick={() => handleClickEliminar(deportista.id)}
+                    leftIcon={<FaTrashAlt />}
                   >
                     Eliminar
                   </Button>

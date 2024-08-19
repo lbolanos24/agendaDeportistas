@@ -9,11 +9,15 @@ import {
   NumberInput,
   NumberInputField,
   Box,
+  NumberIncrementStepper,
+  NumberInputStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ColorPicker } from "chakra-color-picker";
 import { ServicioCursos } from "../../services/ServicioCursos";
 import { Curso } from "../../models/Curso";
+import { FaRegTimesCircle, FaSave } from "react-icons/fa";
 
 type Props = {
   isSubmitting: boolean;
@@ -459,15 +463,24 @@ function EditarCursos(props: Props) {
                 format={(value) => `${value} hora(s)`}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
               <NumberInput
                 defaultValue={0}
                 min={0}
-                max={59}
+                max={30}
+                step={30}
                 onChange={(value) => setDuracionClaseMinutos(value)}
                 format={(value) => `${value} minuto(s)`}
               >
                 <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
               </NumberInput>
             </Grid>
           </FormControl>
@@ -494,6 +507,7 @@ function EditarCursos(props: Props) {
           type="submit"
           margin={"30px"}
           onClick={() => handleClickCancelar(false)}
+          leftIcon={<FaRegTimesCircle />}
         >
           Cancelar
         </Button>
@@ -506,6 +520,7 @@ function EditarCursos(props: Props) {
           margin={"30px"}
           onClick={() => handleClickGuardar(false)}
           isDisabled={!isFormValid}
+          leftIcon={<FaSave />}
         >
           Guardar
         </Button>

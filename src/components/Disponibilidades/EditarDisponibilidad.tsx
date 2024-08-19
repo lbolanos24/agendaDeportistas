@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Disponibilidad } from "../../models/Disponibilidad";
+import { FaRegTimesCircle, FaSave } from "react-icons/fa";
 
 type Props = {
   disponibilidadSeleccionada: Disponibilidad;
@@ -157,13 +158,19 @@ function EditarDisponibilidad(props: Props) {
             </Grid>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={props.onClose}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={props.onClose}
+              leftIcon={<FaRegTimesCircle />}
+            >
               Cerrar
             </Button>
             <Button
               colorScheme={isFormValid ? "blue" : "gray"}
               onClick={() => handleClickGuardar()}
               isDisabled={!isFormValid}
+              leftIcon={<FaSave />}
             >
               Guardar
             </Button>

@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { ServicioUbicaciones } from "../../services/ServicioUbicaciones";
 import { Ubicacion } from "../../models/Ubicacion";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
   servicioUbicaciones: ServicioUbicaciones;
@@ -84,6 +85,7 @@ function VerUbicaciones(props: Props) {
         margin={"20px"}
         onClick={() => handleClick()}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
         Agregar Nuevo
       </Button>
@@ -143,6 +145,8 @@ function VerUbicaciones(props: Props) {
                     size="sm"
                     className="buttonSombreado"
                     onClick={() => handleClickVer(ubicacion.id)}
+                    leftIcon={<FaEye />}
+                    style={{ marginRight: "8px" }}
                   >
                     Ver
                   </Button>
@@ -151,6 +155,7 @@ function VerUbicaciones(props: Props) {
                     size="sm"
                     className="buttonSombreado"
                     onClick={() => handleClickEliminar(ubicacion.id)}
+                    leftIcon={<FaTrashAlt />}
                   >
                     Eliminar
                   </Button>

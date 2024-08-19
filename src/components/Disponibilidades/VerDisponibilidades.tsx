@@ -8,8 +8,8 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { Disponibilidad } from "../../models/Disponibilidad";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
   onClick: (id: number, isNew: boolean) => void;
@@ -36,8 +36,9 @@ function VerDisponibilidades(props: Props) {
         margin={"20px"}
         onClick={() => handleClick(0, true)}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
-        +
+        Agregar Nueva
       </Button>
       {props.disponibilidades != null && props.disponibilidades.length > 0 ? (
         <TableContainer m={"20px"}>
@@ -82,6 +83,8 @@ function VerDisponibilidades(props: Props) {
                       size="sm"
                       className="buttonSombreado"
                       onClick={() => handleClick(disponibilidad.id, false)}
+                      leftIcon={<FaEye />}
+                      style={{ marginRight: "8px" }}
                     >
                       Ver
                     </Button>
@@ -90,6 +93,7 @@ function VerDisponibilidades(props: Props) {
                       size="sm"
                       className="buttonSombreado"
                       onClick={() => handleClickEliminar(disponibilidad.id)}
+                      leftIcon={<FaTrashAlt />}
                     >
                       Eliminar
                     </Button>

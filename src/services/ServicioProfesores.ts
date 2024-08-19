@@ -27,13 +27,13 @@ export class ServicioProfesores {
         "1232313",
         "Jorge Castrillon",
         "",
-        3157895487,
+        "3157895487",
         "",
         "",
         "",
         "",
         "",
-        0,
+        "0",
         [
           new Disponibilidad(1, "Lunes", 8, 12),
           new Disponibilidad(2, "Martes", 8, 12),
@@ -45,14 +45,14 @@ export class ServicioProfesores {
   //FUncion para obtener los cursos desde el backend
   public async obtenerProfesores(): Promise<Profesor[]> {
     try {
-      if (this.profesores.length === 0) {
+      /*if (this.profesores.length === 0) {
         this.cargarDummy();
-      }
+      }*/
 
       // Realizar llamado a servicio rest
-      /*const response = await axios.get(this.ruta + "listar");
+      const response = await axios.get(this.ruta + "listar");
 
-      this.profesores = response.data;*/
+      this.profesores = response.data;
 
       return this.profesores;
     } catch (error) {

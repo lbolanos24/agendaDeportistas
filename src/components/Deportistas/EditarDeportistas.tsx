@@ -26,6 +26,7 @@ import EditarAcudientes from "../Acudiente/EditarAcudientes";
 import { Acudiente } from "../../models/Acudiente";
 import DateTimePicker from "../Controles/DateTimePicker";
 import { Constantes } from "../../models/Constantes";
+import { FaRegTimesCircle, FaSave } from "react-icons/fa";
 //import { Acudiente } from "../../models/Acudiente";
 
 // Registrar el idioma español en react-datepicker
@@ -593,6 +594,7 @@ function EditarDeportistas(props: Props) {
             type="submit"
             margin={"30px"}
             onClick={() => handleClickCancelar(false)}
+            leftIcon={<FaRegTimesCircle />}
           >
             Cancelar
           </Button>
@@ -606,6 +608,7 @@ function EditarDeportistas(props: Props) {
             margin={"30px"}
             onClick={() => handleClickGuardar(false)}
             isDisabled={!isFormValid}
+            leftIcon={<FaSave />}
           >
             Guardar
           </Button>

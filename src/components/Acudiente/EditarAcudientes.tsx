@@ -21,6 +21,7 @@ import Telefono from "../Controles/Telefono";
 import Email from "../Controles/Email";
 import { Constantes } from "../../models/Constantes";
 import { ServicioAcudientes } from "../../services/ServicioAcudientes";
+import { FaRegTimesCircle, FaSave } from "react-icons/fa";
 
 type Props = {
   acudienteSeleccionado: Acudiente;
@@ -268,13 +269,19 @@ function EditarAcudientes(props: Props) {
             </Grid>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={props.onClose}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={props.onClose}
+              leftIcon={<FaRegTimesCircle />}
+            >
               Cerrar
             </Button>
             <Button
               colorScheme={isFormValid ? "blue" : "gray"}
               onClick={() => handleClickGuardar()}
               isDisabled={!isFormValid}
+              leftIcon={<FaSave />}
             >
               Guardar
             </Button>

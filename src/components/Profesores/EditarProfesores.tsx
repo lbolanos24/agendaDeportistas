@@ -18,6 +18,7 @@ import Telefono from "../Controles/Telefono";
 import Email from "../Controles/Email";
 import EditarDisponibilidad from "../Disponibilidades/EditarDisponibilidad";
 import VerDisponibilidades from "../Disponibilidades/VerDisponibilidades";
+import { FaRegTimesCircle, FaSave } from "react-icons/fa";
 
 type Props = {
   setIsEditing: (element: boolean) => void;
@@ -326,6 +327,7 @@ function EditarProfesores(props: Props) {
             type="submit"
             margin={"30px"}
             onClick={() => handleClickCancelar(false)}
+            leftIcon={<FaRegTimesCircle />}
           >
             Cancelar
           </Button>
@@ -339,6 +341,7 @@ function EditarProfesores(props: Props) {
             margin={"30px"}
             onClick={() => handleClickGuardar(false)}
             isDisabled={!isFormValid}
+            leftIcon={<FaSave />}
           >
             Guardar
           </Button>
