@@ -8,35 +8,72 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ServicioUbicaciones } from "../../services/ServicioUbicaciones";
 import { Ubicacion } from "../../models/Ubicacion";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
-  isSubmitting: boolean;
-  setIsNewElement: (element: boolean) => void;
   servicioUbicaciones: ServicioUbicaciones;
+  onNewUbicacionClick: (element: boolean) => void;
+  onSelect: (ubicacion: Ubicacion) => void;
+  isEditing: boolean;
 };
 
 function VerUbicaciones(props: Props) {
   const [isEliminated, setIsEliminated] = useState(false);
+  const [ubicaciones, setUbicaciones] = useState<Ubicacion[]>([]);
 
-  const ubicaciones: Ubicacion[] =
-    props.servicioUbicaciones?.listarUbicaciones() || [];
+  //al cargar el formulario se deben obtener los cursos usando el servicioCursos
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await props.servicioUbicaciones.obtenerUbicaciones();
+        setUbicaciones(data);
+      } catch (error) {
+        console.error("Error fetching ubicaciones:", error);
+      }
+    };
+    console.log("CARGANDO DATOS...");
+    fetchData();
+  }, [props.isEditing]);
 
-  const handleClick = (event: boolean) => {
-    props.setIsNewElement(event);
+  const handleClick = () => {
+    props.onNewUbicacionClick(true);
   };
 
-  const handleClickVer = (event: boolean) => {
-    //TODO
-    props.setIsNewElement(event);
+  const handleClickVer = (id: number) => {
+    const ubicacionSelected = ubicaciones.find(
+      (ubicacion) => ubicacion.id === id
+    );
+    // Se selecciona el deportista para ver sus detalles o editarlos
+    if (ubicacionSelected != null) {
+      props.onSelect(ubicacionSelected);
+    }
   };
 
   const handleClickEliminar = (id: number) => {
     props.servicioUbicaciones.eliminarUbicacion(id);
+
     //Actualizar la vista
+    setUbicaciones(ubicaciones.filter((d) => d.id !== id));
+
     setIsEliminated(!isEliminated);
+  };
+
+  // Formatear la fecha en un formato legible
+  const formatDate = (date: string) => {
+    const fecha = new Date(date);
+    if (isNaN(fecha.getTime())) {
+      return "Fecha inválida";
+    }
+    //console.log("FECHA: " + fecha);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return fecha.toLocaleDateString(undefined, options);
   };
 
   return (
@@ -44,11 +81,11 @@ function VerUbicaciones(props: Props) {
       <Button
         mt={4}
         colorScheme="blue"
-        isLoading={props.isSubmitting}
         type="submit"
         margin={"20px"}
-        onClick={() => handleClick(true)}
+        onClick={() => handleClick()}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
         Agregar Nuevo
       </Button>
@@ -74,26 +111,42 @@ function VerUbicaciones(props: Props) {
             </Tr>
           </Thead>
           <Tbody>
-            {ubicaciones.map((Ubicacion) => (
-              <Tr key={Ubicacion.id}>
+            {ubicaciones.map((ubicacion) => (
+              <Tr key={ubicacion.id}>
                 <Td style={{ border: "1px solid black" }}>
-                  {Ubicacion.nombre}
+                  {ubicacion.nombre}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {Ubicacion.fechaInicioContrato.toLocaleDateString()}
+                  {formatDate(ubicacion.fechaInicioContrato.toString())}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  {Ubicacion.fechaFinContrato.toLocaleDateString()}
+                  {formatDate(ubicacion.fechaFinContrato.toString())}
                 </Td>
                 <Td style={{ border: "1px solid black" }}>
-                  { Ubicacion.getDisponibilidades()}
+                  {ubicacion.disponibilidades?.map((disponibilidad) => (
+                    <div key={disponibilidad.id}>
+                      {disponibilidad.diaDisponibilidad}
+                      {": "}
+                      {disponibilidad.horaInicioDisponibilidad > 12
+                        ? disponibilidad.horaInicioDisponibilidad - 12 + "pm."
+                        : disponibilidad.horaInicioDisponibilidad + "am."}
+                      {" - "}
+                      {disponibilidad.horaFinDisponibilidad > 12
+                        ? disponibilidad.horaFinDisponibilidad - 12 + "pm."
+                        : disponibilidad.horaFinDisponibilidad + "am."}
+                      <br />
+                      <br />
+                    </div>
+                  ))}
                 </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
-                <Button
+                  <Button
                     colorScheme="blue"
                     size="sm"
                     className="buttonSombreado"
-                    onClick={() => handleClickVer(Ubicacion.id)}
+                    onClick={() => handleClickVer(ubicacion.id)}
+                    leftIcon={<FaEye />}
+                    style={{ marginRight: "8px" }}
                   >
                     Ver
                   </Button>
@@ -101,7 +154,8 @@ function VerUbicaciones(props: Props) {
                     colorScheme="blue"
                     size="sm"
                     className="buttonSombreado"
-                    onClick={() => handleClickEliminar(Ubicacion.id)}
+                    onClick={() => handleClickEliminar(ubicacion.id)}
+                    leftIcon={<FaTrashAlt />}
                   >
                     Eliminar
                   </Button>

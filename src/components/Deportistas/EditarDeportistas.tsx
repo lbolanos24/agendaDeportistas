@@ -9,45 +9,151 @@ import {
   NumberInput,
   NumberInputField,
   Box,
+  Checkbox,
+  Image,
+  extendTheme,
+  Textarea,
+  FormHelperText,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { ServicioDeportistas } from "../../services/ServicioDeportistas";
 import { Deportista } from "../../models/Deportista";
+import DatePicker, { registerLocale } from "react-datepicker";
+import { es } from "date-fns/locale";
+import React from "react";
+import VerAcudientes from "../Acudiente/VerAcudiente";
+import EditarAcudientes from "../Acudiente/EditarAcudientes";
+import { Acudiente } from "../../models/Acudiente";
+import DateTimePicker from "../Controles/DateTimePicker";
+import { Constantes } from "../../models/Constantes";
+import { FaRegTimesCircle, FaSave } from "react-icons/fa";
 //import { Acudiente } from "../../models/Acudiente";
 
+// Registrar el idioma español en react-datepicker
+registerLocale("es", es);
+
 type Props = {
-  isSubmitting: boolean;
-  setIsNewElement: (element: boolean) => void;
+  setIsEditing: (element: boolean) => void;
   servicioDeportistas: ServicioDeportistas;
+  deportistaSelected: Deportista;
+  isNewDeportista: boolean;
+  fotoDeportistaActual: string;
+  fotoDocumentoActual: string;
+  onSaveDeportista: (element: boolean) => void;
 };
 
 function EditarDeportistas(props: Props) {
   const [nombre, setNombreDeportista] = useState("");
-  const [edad, setEdad] = useState("");
-  const [fechaNacimiento, setFechaNacimiento] = useState("");
+  const [edad, setEdad] = useState(0);
+  const [fechaNacimiento, setFechaNacimiento] = useState(new Date());
   const [tipoId, setTipoId] = useState("");
   const [id, setId] = useState("");
-  const [Direccion, setDireccion] = useState("");
-  const [Eps, setEps] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [eps, setEps] = useState("");
   const [institucionEducativa, setInstitucioneducativa] = useState("");
-  const [grado, setGrado] = useState("");
+  const [grado, setGrado] = useState(0);
   const [condicionImportante, setCondicionImportante] = useState("");
-  const [imagenPropia, setImagenPropia] = useState("");
-  const [fotoDeportista, setFotoDeportista] = useState("");
-  const [fotoDocumento, setFotoDocumento] = useState("");
-  const [informacionMensualidad, setInformacionMensualidad] = useState("");
-  const [informacionReposicion, setInformacionReposicion] = useState("");
-  const [informacionVacaciones, setInformacionVacaciones] = useState("");
-  const [comprobanteInscripcion, setComprobanteInscripcion] = useState("");
-  const [isNewElement, setIsNewElement] = useState(false);
-  const [opciones, setOpciones] = useState<{ id: string; value: string }[]>([]);
+  const [imagenPropia, setImagenPropia] = useState<boolean>(false);
+  const [informacionMensualidad, setInformacionMensualidad] =
+    useState<boolean>(false);
+  const [informacionReposicion, setInformacionReposicion] =
+    useState<boolean>(false);
+  const [informacionVacaciones, setInformacionVacaciones] =
+    useState<boolean>(false);
+  const [comprobanteInscripcion, setComprobanteInscripcion] =
+    useState<boolean>(false);
+  const [acudientes, setAcudientes] = useState<Acudiente[]>([]);
+  const [fotoDeportista, setFotoDeportista] = useState<File | null>(null);
+  const [fotoDocumento, setFotoDocumento] = useState<File | null>(null);
+  const [fotoDeportistaUrl, setFotoDeportistaUrl] = useState<string>("");
+  const [fotoDocumentoUrl, setFotoDocumentoUrl] = useState<string>("");
+  const [isAcudientesOpen, setIsAcudientesOpen] = useState(false);
+  const [acudienteSelected, setAcudienteSelected] = useState<Acudiente>({
+    id: "0",
+    tipoId: "",
+    nombre: "",
+    direccion: "",
+    numeroCelular: 0,
+    correoElectronico: "",
+    imagenPropia: false,
+    profesionEmpresa: "",
+    parentesco: "",
+  });
+  const [isNewAcudiente, setIsNewAcudiente] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const isValid =
+      nombre !== "" &&
+      tipoId !== "" &&
+      id !== "" &&
+      edad > 0 &&
+      direccion !== "" &&
+      eps !== "" &&
+      institucionEducativa !== "" &&
+      imagenPropia !== null &&
+      informacionMensualidad !== null &&
+      informacionReposicion !== null &&
+      informacionVacaciones !== null &&
+      comprobanteInscripcion !== null &&
+      acudientes.length > 0 &&
+      fotoDeportista !== undefined &&
+      fotoDocumento !== undefined;
+    setIsFormValid(isValid);
+  }, [
+    id,
+    nombre,
+    edad,
+    tipoId,
+    eps,
+    institucionEducativa,
+    grado,
+    imagenPropia,
+    informacionMensualidad,
+    informacionReposicion,
+    informacionVacaciones,
+    comprobanteInscripcion,
+    acudientes,
+    fotoDeportista,
+    fotoDocumento,
+  ]);
+
+  useEffect(() => {
+    if (props.deportistaSelected) {
+      setNombreDeportista(props.deportistaSelected.nombre);
+      setEdad(props.deportistaSelected.edad);
+      setFechaNacimiento(props.deportistaSelected.fechaNacimiento);
+      setTipoId(props.deportistaSelected.tipoId);
+      setId(props.deportistaSelected.id);
+      setDireccion(props.deportistaSelected.direccion);
+      setEps(props.deportistaSelected.eps);
+      setInstitucioneducativa(props.deportistaSelected.institucionEducativa);
+      setGrado(props.deportistaSelected.grado);
+      setCondicionImportante(props.deportistaSelected.condicionImportante);
+      setImagenPropia(props.deportistaSelected.imagenPropia);
+      setInformacionMensualidad(
+        props.deportistaSelected.informacionMensualidad
+      );
+      setInformacionReposicion(props.deportistaSelected.informacionReposicion);
+      setInformacionVacaciones(props.deportistaSelected.informacionVacaciones);
+      setComprobanteInscripcion(
+        props.deportistaSelected.comprobanteInscripcion
+      );
+      if (props.isNewDeportista) {
+        setAcudientes([]);
+      } else {
+        setAcudientes(props.deportistaSelected.acudientes);
+      }
+    }
+  }, [props.deportistaSelected]);
 
   const handleClickCancelar = (event: boolean) => {
-    props.setIsNewElement(event);
+    props.setIsEditing(event);
   };
 
   //evento para guardar los datos capturados en pantalla
-  const handleClickGuardar = (event: boolean) => {
+  const handleClickGuardar = async (event: boolean) => {
     // Crear el objeto
     const nuevoDeportista = new Deportista(
       id,
@@ -61,8 +167,10 @@ function EditarDeportistas(props: Props) {
       grado,
       condicionImportante,
       imagenPropia,
-      fotoDeportista,
-      fotoDocumento,
+      "",
+      "",
+      fotoDeportistaUrl,
+      fotoDocumentoUrl,
       informacionMensualidad,
       informacionReposicion,
       informacionVacaciones,
@@ -71,16 +179,132 @@ function EditarDeportistas(props: Props) {
     );
 
     // Se envian los datos capturados a una base de datos
-    console.log(nuevoDeportista);
+    //console.log(nuevoDeportista);
+    let response = null;
 
-    props.servicioDeportistas?.agregarDeportista(nuevoDeportista);
-    props.setIsNewElement(event);
+    if (props.isNewDeportista) {
+      response = await props.servicioDeportistas?.crearDeportista(
+        nuevoDeportista,
+        fotoDeportista,
+        fotoDocumento
+      );
+    } else {
+      response = await props.servicioDeportistas?.actualizarDeportista(
+        nuevoDeportista,
+        fotoDeportista,
+        fotoDocumento
+      );
+    }
+
+    props.onSaveDeportista(true);
   };
+
+  const handleFileChange = async (
+    nombre: string,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (files) {
+      try {
+        const file = files[0];
+        // Verificar el tipo de archivo
+        const validTypes = ["image/jpeg", "image/bmp"];
+        if (!validTypes.includes(file.type)) {
+          setErrorMessage("Solo se permiten archivos JPG y BMP.");
+          return;
+        }
+
+        // Verificar el tamaño del archivo
+        const maxSizeInBytes = 800 * 1024; // 500KB
+        if (file.size > maxSizeInBytes) {
+          setErrorMessage("El archivo no debe exceder los 800KB.");
+          return;
+        }
+
+        // Si pasa ambas validaciones, procede con el manejo del archivo
+        setErrorMessage("");
+        if (nombre == "Documento") {
+          setFotoDocumento(file);
+          // Crear una URL para la vista previa
+          const fotoDocumentoUrl = URL.createObjectURL(file);
+          setFotoDocumentoUrl(fotoDocumentoUrl);
+        } else {
+          setFotoDeportista(file); // Crear una URL para la vista previa
+          const fotoDeportistaUrl = URL.createObjectURL(file);
+          setFotoDeportistaUrl(fotoDeportistaUrl);
+        }
+      } catch (error) {
+        console.error("Error creating ImageBitmap:", error);
+      }
+    }
+  };
+
+  function handleClickAcudientes(id: string, isNew: boolean): void {
+    if (!isNew) {
+      if (acudientes.length > 0) {
+        const acudiente = acudientes.find((acudiente) => acudiente.id === id);
+        if (acudiente) {
+          setAcudienteSelected(acudiente);
+        }
+      } else {
+        console.error("No acudientes found.");
+      }
+    } else {
+      setAcudienteSelected({
+        id: "0",
+        tipoId: "",
+        nombre: "",
+        direccion: "",
+        numeroCelular: 0,
+        correoElectronico: "",
+        imagenPropia: false,
+        profesionEmpresa: "",
+        parentesco: "",
+      });
+    }
+
+    setIsAcudientesOpen(true);
+    setIsNewAcudiente(isNew);
+  }
+
+  const handleCloseModal = () => {
+    setIsAcudientesOpen(false);
+  };
+
+  function handleSaveAcudiente(acudiente: Acudiente): void {
+    if (acudiente !== null) {
+      if (isNewAcudiente) {
+        acudientes.push(acudiente);
+      } else {
+        const index = acudientes.findIndex((ac) => ac.id === acudiente.id);
+        if (index > -1) {
+          acudientes[index] = acudiente;
+        } else {
+          console.error("Acudiente not found.");
+        }
+      }
+
+      setAcudientes(acudientes);
+    }
+
+    setIsAcudientesOpen(false);
+  }
+
+  function handlerDeleteAcudiente(id: string): void {
+    setAcudientes(acudientes.filter((ac) => ac.id !== id));
+  }
 
   return (
     <>
+      <EditarAcudientes
+        onSave={handleSaveAcudiente}
+        acudienteSeleccionado={acudienteSelected}
+        isEditarAcudienteOpen={isAcudientesOpen}
+        onClose={handleCloseModal}
+        idDeportista={id}
+        isNewElement={isNewAcudiente}
+      ></EditarAcudientes>
       <Grid
-        h="300px"
         templateRows="repeat(2, 1fr)"
         templateColumns="repeat(4, 1fr)"
         gap={4}
@@ -91,6 +315,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Nombre Deportista</FormLabel>
             <Input
+              value={nombre}
               placeholder="Digite el nombre del Deportista"
               onChange={(e) => setNombreDeportista(e.target.value)}
             />
@@ -100,18 +325,21 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Tipo de identificación</FormLabel>
             <Select
+              value={tipoId}
               placeholder="Seleccione el numero de identificación"
               onChange={(e) => setTipoId(e.target.value)}
             >
               <option value="Cedula">Cédula</option>
               <option value="Pasaporte">Pasaporte</option>
-              </Select>
+            </Select>
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
             <FormLabel>Numero de Identificación</FormLabel>
             <Input
+              readOnly={!props.isNewDeportista}
+              value={id}
               placeholder="Digite el numero de Identificación"
               onChange={(e) => setId(e.target.value)}
             />
@@ -120,25 +348,28 @@ function EditarDeportistas(props: Props) {
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
             <FormLabel>Edad</FormLabel>
-            <Input
-              placeholder="Digite la edad"
-              onChange={(e) => setEdad(e.target.value)}
-            />
+            <NumberInput
+              value={edad}
+              defaultValue={0}
+              onChange={(value) => setEdad(Number(value))}
+            >
+              <NumberInputField />
+            </NumberInput>
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
-          <FormControl isRequired>
-            <FormLabel>Fecha de nacimiento</FormLabel>
-            <Input
-              placeholder="Digite la fecha de nacimiento"
-              onChange={(e) => setFechaNacimiento(e.target.value)}
-            />
-          </FormControl>
+          <DateTimePicker
+            fechaNacimiento={fechaNacimiento}
+            setFechaNacimiento={setFechaNacimiento}
+            isRequired={true}
+            label={"Fecha de Nacimiento"}
+          />
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
             <FormLabel>Dirección</FormLabel>
             <Input
+              value={direccion}
               placeholder="Digite la dirección"
               onChange={(e) => setDireccion(e.target.value)}
             />
@@ -148,6 +379,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>EPS</FormLabel>
             <Input
+              value={eps}
               placeholder="Digite el nombre de la EPS"
               onChange={(e) => setEps(e.target.value)}
             />
@@ -157,6 +389,7 @@ function EditarDeportistas(props: Props) {
           <FormControl isRequired>
             <FormLabel>Institucion educativa</FormLabel>
             <Input
+              value={institucionEducativa}
               placeholder="Digite la institucion educativa a la que pertenece el deportista"
               onChange={(e) => setInstitucioneducativa(e.target.value)}
             />
@@ -165,124 +398,221 @@ function EditarDeportistas(props: Props) {
         <GridItem rowSpan={1} colSpan={1}>
           <FormControl isRequired>
             <FormLabel>Grado</FormLabel>
-            <Input
-              placeholder="Digite el grado cursado por el deportista"
-              onChange={(e) => setGrado(e.target.value)}
-            />
+            <NumberInput
+              value={grado}
+              defaultValue={0}
+              onChange={(value) => setGrado(Number(value))}
+            >
+              <NumberInputField />
+            </NumberInput>
           </FormControl>
         </GridItem>
-      </Grid>
-      <Grid 
-      h="900px"
-      templateRows="repeat(4, 1fr)"
-      templateColumns="repeat(1, 1fr)"
-      gap={1}
-      margin={"20px"}
-      padding={"15px"}
-      >
-        <GridItem rowSpan={1} colSpan={1}>
+        <GridItem rowSpan={1} colSpan={3}>
           <FormControl isRequired>
-            <FormLabel>¿CONSIDERA USTED QUE SU HIJO/A PRESENTA ALGUNA CONDICIÓN QUE SEA IMPORTANTE COMUNICAR AL PROFESOR PARA EL ADECUADO TRATAMIENTO Y EFECTIVO DESARROLLO DE LAS ACTIVIDADES DURANTE LAS CLASES?¿CUAL/CUALES?</FormLabel>
-            <Input
+            <FormLabel>Acudientes</FormLabel>
+            <VerAcudientes
+              onDelete={handlerDeleteAcudiente}
+              onClick={handleClickAcudientes}
+              acudientes={acudientes}
+            ></VerAcudientes>
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={2} colSpan={4}>
+          <FormControl isRequired>
+            <FormLabel>{Constantes.CONDICION_IMPORTANTE_LABEL}</FormLabel>
+            <Textarea
+              value={condicionImportante}
               placeholder="Indique si el deportista presenta alguna condicion importante"
-              onChange={(e) => setEps(e.target.value)}
+              onChange={(e) => setCondicionImportante(e.target.value)}
             />
           </FormControl>
-      </GridItem>
-      
-        <GridItem rowSpan={1} colSpan={1}>
-        <FormControl isRequired>
-            <FormLabel>Durante las clases, el Club estará recopilando memorias de las actividades por medio de imágenes y/o videos, esta usted de acuerdo con que SU IMAGEN sea compartida en medios de comunicación y redes sociales?</FormLabel>
-            <Input type="checkbox"
-              onChange={(e) => setImagenPropia(e.target.value)}
-            />
-          </FormControl>
-          </GridItem>
-          <GridItem rowSpan={1} colSpan={1}>
-            <FormControl isRequired>
-            <FormLabel>El pago de las mensualidades corresponden al trabajo de 4 semanas por mes y de ahí se despliega la cantidad de clases que adquiera la familia por semana, si por algún motivo nos vemos en la necesidad de cancelar alguna de las clases (Festivo, eventos deportivos, incapacidad del profesor sin posible reemplazo) se tendrá en cuenta le número de clases dictadas al grupo para hacer la reposición de la misma. En cuyo caso, será el profesor titular del grupo quien coordinará con las familias la reposición de la clase procurando que la mayoría de los integrantes del grupo pueda asistir en un mismo horario, de no ser posible le pedimos por favor nos envíe un correo con el asunto SOLICITUD DE REPOSICIÓN y el número de documento del niño o la niña, así podremos desde nuestra base de datos indicarle cuales son las opciones para dicha reposición. La respuesta a este punto es ENTENDIDO</FormLabel>
-             <Input type="checkbox"
-              onChange={(e) => setInformacionMensualidad(e.target.value)}
-            />
-          </FormControl>
-          </GridItem>
-          <GridItem rowSpan={1} colSpan={1}>
-            <FormControl isRequired>
-            <FormLabel>Entendemos que en algunos casos se pueden presentar inasistencias, es importante para nosotros que usted como adulto tenga claro que para realizar una reposición de clase necesitamos que nos comparta un comprobante medico para reponer todas las clases que sean necesarias debido a dicha incapacidad, y en caso de no tenerlo solo podremos reponer 1 clase por mes con previa reserva. 
-            Para esto deberá enviarnos un correo con el asunto SOLICITUD DE REPOSICIÓN y el número de documento del niño o la niña, así podremos desde nuestra base de datos indicarle cuales son las opciones para dicha reposición. La respuesta a este punto es ENTENDIDO</FormLabel>
-              <Input type="checkbox"
-              onChange={(e) => setInformacionReposicion(e.target.value)}
-            />
-          </FormControl>
-          </GridItem>
-          <GridItem rowSpan={1} colSpan={1}>
-            <FormControl isRequired>
-            <FormLabel>Con respecto a las fechas de vacaciones (inicio de año, semana santa, vacaciones de mitad de año, semana de octubre y final de año) consideramos importante  que las familias sepan que no serán contempladas en los cobros de mensualidades, y por tanto no se dictarán para respetar los planes familiares. 
-            Para las familias que prefieren conservar las actividades se realizarán propuesta de intensivos para estas fechas y de acuerdo a la cobertura se extenderán la mayor cantidad de tiempo posible y para organizar estas actividades será el profesor titular del grupo quien coordinará con las familias este trabajo, si por algún motivo el profesor no dictará estas actividades será él quien direccione a las familias interesadas con el área administrativa para ayudarlas con su necesidad. La respuesta a este punto es ENTENDIDO</FormLabel>
-             <Input type="checkbox"
-              onChange={(e) => setInformacionVacaciones(e.target.value)}
-            />
-            </FormControl>
-          </GridItem>
-          <GridItem rowSpan={1} colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>Para finalizar el proceso de inscripción y entendiendo que está de acuerdo con lo descrito en este formulario. Le pedimos por favor cancelar el valor de la matrícula por $100.000COP a la cuenta de ahorros 00682228130 de Bancolombia y nos comparta el comprobante.
-              La matrícula corresponde al seguro contra accidentes deportivos con cobertura desde el 1 de enero hasta el 31 de diciembre del presente año y esta debe renovarse cada año.</FormLabel>
-              <Input type="checkbox"
-              onChange={(e) => setComprobanteInscripcion(e.target.value)}
-            />
-            </FormControl>
-          </GridItem>
-    </Grid>
-
-      <Grid 
-      h="150px"
-      templateRows="repeat(2, 1fr)"
-      templateColumns="repeat(2, 1fr)"
-      gap={2}
-      margin={"20px"}
-      padding={"15px"}
-      >  
-        <GridItem rowSpan={1} colSpan={1}>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={4}>
           <FormControl isRequired>
-                <FormLabel>Foto del deportista</FormLabel>
-                <Input type="image"
-                  onChange={(e) => setFotoDeportista(e.target.value)}
-              />
+            <Checkbox
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+                "&:checked .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+              }}
+              isChecked={imagenPropia}
+              onChange={(e) => setImagenPropia(e.target.checked)}
+            >
+              <FormLabel>{Constantes.IMAGEN_PROPIA_LABEL}</FormLabel>
+            </Checkbox>
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={4}>
+          <FormControl isRequired>
+            <Checkbox
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+                "&:checked .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+              }}
+              isChecked={informacionMensualidad}
+              onChange={(e) => setInformacionMensualidad(e.target.checked)}
+            >
+              <FormLabel>{Constantes.INFORMACION_MENSUALIDAD_LABEL}</FormLabel>
+            </Checkbox>
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={4}>
+          <FormControl isRequired>
+            <Checkbox
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+                "&:checked .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+              }}
+              isChecked={informacionReposicion}
+              onChange={(e) => setInformacionReposicion(e.target.checked)}
+            >
+              <FormLabel>{Constantes.INFORMACION_REPOSICION_LABEL}</FormLabel>
+            </Checkbox>
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={4}>
+          <FormControl isRequired>
+            <Checkbox
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+                "&:checked .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+              }}
+              isChecked={informacionVacaciones}
+              onChange={(e) => setInformacionVacaciones(e.target.checked)}
+            >
+              <FormLabel>{Constantes.INFORMACION_VACACIONES_LABEL}</FormLabel>
+            </Checkbox>
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={4}>
+          <FormControl isRequired>
+            <Checkbox
+              sx={{
+                "& .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+                "&:checked .chakra-checkbox__control": {
+                  borderColor: "black",
+                },
+              }}
+              isChecked={comprobanteInscripcion}
+              onChange={(e) => setComprobanteInscripcion(e.target.checked)}
+            >
+              <FormLabel>{Constantes.COMPROBANTE_INSCRIPCION_LABEL}</FormLabel>
+            </Checkbox>
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={2}>
+          <FormControl isRequired>
+            <FormLabel>Foto del deportista</FormLabel>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                handleFileChange("Deportista", e);
+              }}
+            />
+            {errorMessage && (
+              <FormHelperText color="red.500">{errorMessage}</FormHelperText>
+            )}
+            {fotoDeportistaUrl != "" ? (
+              <Box mt={4}>
+                <Image
+                  src={fotoDeportistaUrl}
+                  alt="Sin Foto"
+                  maxW="400px"
+                  maxH="200px"
+                  borderRadius="md"
+                />
+              </Box>
+            ) : (
+              <Box mt={4}>
+                <Image
+                  src={`data:image/jpeg;base64,${props.fotoDeportistaActual}`}
+                  alt="Sin Foto"
+                  maxW="400px"
+                  maxH="200px"
+                  borderRadius="md"
+                />
+              </Box>
+            )}
+          </FormControl>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={2}>
+          <FormControl isRequired>
+            <FormLabel>Foto del documento</FormLabel>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                handleFileChange("Documento", e);
+              }}
+            />
+            {fotoDocumentoUrl != "" ? (
+              <Box mt={4}>
+                <Image
+                  src={fotoDocumentoUrl}
+                  alt="Sin Foto"
+                  maxW="400px"
+                  maxH="200px"
+                  borderRadius="md"
+                />
+              </Box>
+            ) : (
+              <Box mt={4}>
+                <Image
+                  src={`data:image/jpeg;base64,${props.fotoDocumentoActual}`}
+                  alt="Sin Foto"
+                  maxW="400px"
+                  maxH="200px"
+                  borderRadius="md"
+                />
+              </Box>
+            )}
           </FormControl>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1}>
-         <FormControl isRequired>
-              <FormLabel>Foto del documento</FormLabel>
-              <Input type="image"
-                onChange={(e) => setFotoDocumento(e.target.value)}
-            />
-          </FormControl>
-        </GridItem>      
-      </Grid>
-
-      <Grid templateColumns="repeat(6, 1fr)">
-        <Button
-          className="buttonSombreado"
-          mt={4}
-          colorScheme="blue"
-          isLoading={props.isSubmitting}
-          type="submit"
-          margin={"30px"}
-          onClick={() => handleClickCancelar(false)}
-        >
-          Cancelar
-        </Button>
-        <Button
-          className="buttonSombreado"
-          mt={4}
-          isLoading={props.isSubmitting}
-          type="submit"
-          margin={"30px"}
-          onClick={() => handleClickGuardar(false)}
-        >
-          Guardar
-        </Button>
+          <Button
+            className="buttonSombreado"
+            mt={4}
+            colorScheme="blue"
+            type="submit"
+            margin={"30px"}
+            onClick={() => handleClickCancelar(false)}
+            leftIcon={<FaRegTimesCircle />}
+          >
+            Cancelar
+          </Button>
+        </GridItem>
+        <GridItem rowSpan={1} colSpan={1}>
+          <Button
+            colorScheme={isFormValid ? "blue" : "gray"}
+            className="buttonSombreado"
+            mt={4}
+            type="submit"
+            margin={"30px"}
+            onClick={() => handleClickGuardar(false)}
+            isDisabled={!isFormValid}
+            leftIcon={<FaSave />}
+          >
+            Guardar
+          </Button>
+        </GridItem>
       </Grid>
     </>
   );

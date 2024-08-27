@@ -1,10 +1,10 @@
 //Objeto de negocio Curso
 export class Curso {
-  id: number;
+  idCurso: number;
   nombre: string;
   sexo: string;
-  clasificacionEdadInicial: string;
-  edadInicial: string;
+  clasificacionEdad: string;
+  edad: string;
   nivel: string;
   subNivel: string;
   modalidad: string;
@@ -14,11 +14,11 @@ export class Curso {
   color: string;
 
   constructor(
-    id: number,
+    idCurso: number,
     nombre: string,
     sexo: string,
-    clasificacionEdadInicial: string,
-    edadInicial: string,
+    clasificacionEdad: string,
+    edad: string,
     nivel: string,
     subNivel: string,
     modalidad: string,
@@ -27,11 +27,11 @@ export class Curso {
     duracionClaseMinutos: string,
     color: string
   ) {
-    this.id = id;
+    this.idCurso = idCurso;
     this.nombre = nombre;
     this.sexo = sexo;
-    this.clasificacionEdadInicial = clasificacionEdadInicial;
-    this.edadInicial = edadInicial;
+    this.clasificacionEdad = clasificacionEdad;
+    this.edad = edad;
     this.nivel = nivel;
     this.subNivel = subNivel;
     this.modalidad = modalidad;

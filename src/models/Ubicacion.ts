@@ -1,12 +1,12 @@
 import { Disponibilidad } from "./Disponibilidad";
 
-export class Ubicacion{
+export class Ubicacion {
   id: number;
   nombre: string;
   direccion: string;
   telefono: string;
   nombreContacto: string;
-  estado: boolean; 
+  estado: boolean;
   //TBD el estado es activo o inactivo, se debe considerar las fechas de activacion e inactivacion-- proceso
   fechaInicioContrato: Date;
   fechaFinContrato: Date;
@@ -33,9 +33,5 @@ export class Ubicacion{
     this.fechaInicioContrato = fechaInicioContrato;
     this.fechaFinContrato = fechaFinContrato;
     this.disponibilidades = disponibilidades;
-  }
-
-  getDisponibilidades():string {
-    return this.disponibilidades?.map(disponibilidad => `${disponibilidad.diaDisponibilidad} ${disponibilidad.horaInicioDisponibilidad} - ${disponibilidad.horaFinDisponibilidad}`).join(' , ');
   }
 }

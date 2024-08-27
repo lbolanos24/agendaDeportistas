@@ -8,10 +8,29 @@ import { ServicioProfesores } from "../../services/ServicioProfesores";
 type Props = { titulo: string };
 
 function GestionProfesores(props: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isNewElement, setIsNewElement] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isNewProfesor, setIsNewProfesor] = useState(false);
+  const [profesorSelected, setProfesorSelected] = useState<Profesor>(
+    new Profesor("", "", "", 0, "", "", "", "", "", 0, [])
+  );
 
   const servicioProfesores = ServicioProfesores.getInstancia();
+
+  function handleSelectProfesor(profesorSelected: Profesor): void {
+    setProfesorSelected(profesorSelected);
+    setIsEditing(true);
+    setIsNewProfesor(false);
+  }
+
+  function handleNewProfesorClick(element: boolean): void {
+    setIsNewProfesor(true);
+    setIsEditing(true);
+    setProfesorSelected(new Profesor("", "", "", 0, "", "", "", "", "", 0, []));
+  }
+
+  function handleSaveProfesor(newItem: boolean): void {
+    setIsEditing(false);
+  }
 
   return (
     <>
@@ -20,16 +39,19 @@ function GestionProfesores(props: Props) {
           {props.titulo}
         </Text>
       </Center>
-      {!!!isNewElement ? (
+      {!!!isEditing ? (
         <VerProfesores
-          isSubmitting={isSubmitting}
-          setIsNewElement={setIsNewElement}
+          onNewProfesorClick={handleNewProfesorClick}
+          onSelect={handleSelectProfesor}
+          isEditing={isEditing}
           servicioProfesores={servicioProfesores}
         />
       ) : (
         <EditarProfesores
-          isSubmitting={isSubmitting}
-          setIsNewElement={setIsNewElement}
+          setIsEditing={setIsEditing}
+          profesorSelected={profesorSelected}
+          isNewProfesor={isNewProfesor}
+          onSaveProfesor={handleSaveProfesor}
           servicioProfesores={servicioProfesores}
         />
       )}

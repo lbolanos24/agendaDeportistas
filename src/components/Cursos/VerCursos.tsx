@@ -8,9 +8,10 @@ import {
   Td,
   Button,
 } from "@chakra-ui/react";
-import { ServicioCursos } from "../../services/servicioCursos";
-import { useState } from "react";
+import { ServicioCursos } from "../../services/ServicioCursos";
+import { useEffect, useState } from "react";
 import { Curso } from "../../models/Curso";
+import { FaEye, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 type Props = {
   isSubmitting: boolean;
@@ -20,17 +21,33 @@ type Props = {
 
 function VerCursos(props: Props) {
   const [isEliminated, setIsEliminated] = useState(false);
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [curso, setCurso] = useState(null);
 
   //al cargar el formulario se deben obtener los cursos usando el servicioCursos
-  const cursos: Curso[] = props.servicioCursos?.listarCursos() || [];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await props.servicioCursos.obtenerCursos();
+        setCursos(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleClick = (event: boolean) => {
     props.setIsNewElement(event);
   };
 
-  const handleClickEliminar = (id: number) => {
+  const handleClickEliminar = async (id: number) => {
     console.log("Eliminar curso con id: " + id);
-    props.servicioCursos.eliminarCurso(id);
+    await props.servicioCursos.eliminarCurso(id);
     //Actualizar la vista
+    // Remove the course from the state
+    setCursos(cursos.filter((curso) => curso.idCurso !== id));
     setIsEliminated(!isEliminated);
   };
 
@@ -44,6 +61,7 @@ function VerCursos(props: Props) {
         margin={"20px"}
         onClick={() => handleClick(true)}
         className="buttonSombreado"
+        leftIcon={<FaPlus />}
       >
         Agregar Nuevo
       </Button>
@@ -55,16 +73,10 @@ function VerCursos(props: Props) {
                 Nombre
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Nivel
+                Sexo
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                SubNivel
-              </Th>
-              <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Modalidad
-              </Th>
-              <Th style={{ textAlign: "center", border: "1px solid black" }}>
-                Categoria
+                Edad Inicial
               </Th>
               <Th style={{ textAlign: "center", border: "1px solid black" }}>
                 Duracion Clase
@@ -79,16 +91,14 @@ function VerCursos(props: Props) {
           </Thead>
           <Tbody>
             {cursos.map((curso) => (
-              <Tr key={curso.id}>
+              <Tr key={curso.idCurso}>
                 <Td style={{ border: "1px solid black" }}>{curso.nombre}</Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
-                  {curso.nivel}
+                  {curso.sexo}
                 </Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
-                  {curso.subNivel}
+                  {curso.edad}
                 </Td>
-                <Td style={{ border: "1px solid black" }}>{curso.modalidad}</Td>
-                <Td style={{ border: "1px solid black" }}>{curso.categoria}</Td>
                 <Td style={{ textAlign: "center", border: "1px solid black" }}>
                   {curso.duracionClaseHoras} horas {curso.duracionClaseMinutos}{" "}
                   minutos
@@ -110,7 +120,8 @@ function VerCursos(props: Props) {
                     colorScheme="blue"
                     size="sm"
                     className="buttonSombreado"
-                    onClick={() => handleClickEliminar(curso.id)}
+                    onClick={() => handleClickEliminar(curso.idCurso)}
+                    leftIcon={<FaTrashAlt />}
                   >
                     Eliminar
                   </Button>

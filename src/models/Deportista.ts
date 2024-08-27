@@ -2,7 +2,7 @@ import { ListItemProps } from "@chakra-ui/react";
 import { Acudiente } from "./Acudiente";
 
 export class Deportista {
-  id: number;
+  id: string;
   nombre: string;
   edad: number;
   fechaNacimiento: Date;
@@ -13,8 +13,10 @@ export class Deportista {
   grado: number;
   condicionImportante: string;
   imagenPropia: boolean;
-  fotoDeportista: ImageBitmap;
-  fotoDocumento: ImageBitmap;
+  fotoDeportista: string;
+  fotoDocumento: string;
+  fotoDeportistaUrl: string;
+  fotoDocumentoUrl: string;
   //aceptacion de terminos se da por el acudiente pero se mira en la pantalla del deportista
   informacionMensualidad: boolean;
   informacionReposicion: boolean;
@@ -23,7 +25,7 @@ export class Deportista {
   acudientes: Array<Acudiente>;
 
   constructor(
-    id: number,
+    id: string,
     nombre: string,
     edad: number,
     fechaNacimiento: Date,
@@ -34,15 +36,16 @@ export class Deportista {
     grado: number,
     condicionImportante: string,
     imagenPropia: boolean,
-    fotoDeportista: ImageBitmap,
-    fotoDocumento: ImageBitmap,
+    fotoDeportista: string,
+    fotoDocumento: string,
+    fotoDeportistaUrl: string,
+    fotoDocumentoUrl: string,
     informacionMensualidad: boolean,
     informacionReposicion: boolean,
     informacionVacaciones: boolean,
     comprobanteInscripcion: boolean,
     acudientes: Array<Acudiente>
-)
-    {
+  ) {
     this.id = id;
     this.nombre = nombre;
     this.edad = edad;
@@ -56,14 +59,12 @@ export class Deportista {
     this.imagenPropia = imagenPropia;
     this.fotoDeportista = fotoDeportista;
     this.fotoDocumento = fotoDocumento;
+    this.fotoDeportistaUrl = fotoDeportistaUrl;
+    this.fotoDocumentoUrl = fotoDocumentoUrl;
     this.informacionMensualidad = informacionMensualidad;
     this.informacionReposicion = informacionReposicion;
     this.informacionVacaciones = informacionVacaciones;
     this.comprobanteInscripcion = comprobanteInscripcion;
     this.acudientes = acudientes;
-  }
-
-  getAcudientes():string {
-    return this.acudientes?.map(acudiente => `${acudiente.nombre} ${acudiente.numeroCelular} `).join(' , ');
   }
 }

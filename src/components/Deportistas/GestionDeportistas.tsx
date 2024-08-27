@@ -8,30 +8,105 @@ import VerDeportistas from "./VerDeportistas";
 
 type Props = { titulo: string };
 
+const deportistaVacio = {
+  id: "",
+  nombre: "",
+  tipoId: "",
+  fechaNacimiento: new Date(),
+  edad: 0,
+  direccion: "",
+  eps: "",
+  institucionEducativa: "",
+  grado: 0,
+  condicionImportante: "",
+  imagenPropia: false,
+  fotoDeportista: "",
+  fotoDocumento: "",
+  fotoDeportistaUrl: "",
+  fotoDocumentoUrl: "",
+  informacionMensualidad: false,
+  informacionReposicion: false,
+  informacionVacaciones: false,
+  comprobanteInscripcion: false,
+  acudientes: [],
+};
+
 function GestionDeportistas(props: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isNewElement, setIsNewElement] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isNewDeportista, setIsNewDeportista] = useState(false);
+  const [deportistaSelected, setDeportistaSelected] =
+    useState<Deportista>(deportistaVacio);
+  const [fotoDeportista, setFotoDeportista] = useState<string>("");
+  const [fotoDocumento, setFotoDocumento] = useState<string>("");
 
   const servicioDeportistas = ServicioDeportistas.getInstancia();
+
+  function handleSelectDeportista(deportistaSelected: Deportista): void {
+    setDeportistaSelected(deportistaSelected);
+  }
+
+  useEffect(() => {
+    const fetchFotos = async () => {
+      try {
+        const response = await servicioDeportistas.obtenerFotoDeportista(
+          deportistaSelected.id
+        );
+        setFotoDeportista(response);
+
+        const response2 = await servicioDeportistas.obtenerFotoDocumento(
+          deportistaSelected.id
+        );
+        setFotoDocumento(response2);
+
+        setIsEditing(true);
+        setIsNewDeportista(false);
+      } catch (error) {
+        console.error("Error fetching fotos", error);
+      }
+    };
+
+    if (deportistaSelected.id != "") {
+      fetchFotos();
+    }
+  }, [deportistaSelected]);
+
+  function handleNewDeportistaClick(newItem: boolean): void {
+    setIsNewDeportista(true);
+    setIsEditing(true);
+    setDeportistaSelected(deportistaVacio);
+    setFotoDeportista("");
+    setFotoDocumento("");
+  }
+
+  function handleSaveDeportista(newItem: boolean): void {
+    setIsEditing(false);
+  }
 
   return (
     <>
       <Center p="4">
         <Text as="b" textAlign="center" fontSize="20px" color="black">
-          {props.titulo}
+          {!!!isEditing
+            ? "Listado de Deportistas Inscritos"
+            : "Captura de Datos del Deportista"}
         </Text>
       </Center>
-      {!!!isNewElement ? (
+      {!!!isEditing ? (
         <VerDeportistas
-          isSubmitting={isSubmitting}
-          setIsNewElement={setIsNewElement}
+          onNewDeportistaClick={handleNewDeportistaClick}
           servicioDeportistas={servicioDeportistas}
+          onSelect={handleSelectDeportista}
+          isEditing={isEditing}
         />
       ) : (
         <EditarDeportistas
-          isSubmitting={isSubmitting}
-          setIsNewElement={setIsNewElement}
+          setIsEditing={setIsEditing}
           servicioDeportistas={servicioDeportistas}
+          deportistaSelected={deportistaSelected}
+          isNewDeportista={isNewDeportista}
+          fotoDeportistaActual={fotoDeportista}
+          fotoDocumentoActual={fotoDocumento}
+          onSaveDeportista={handleSaveDeportista}
         />
       )}
     </>

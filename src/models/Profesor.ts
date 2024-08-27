@@ -1,32 +1,33 @@
 import { Disponibilidad } from "./Disponibilidad";
 
 export class Profesor {
-  id: number;//cedula
+  id: string; //cedula
   nombre: string;
   tipoId: string;
-  numeroCelular: number;
+  numeroCelular: string;
   direccion: string;
   eps: string;
   arl: string;
   correoElectronico: string;
-  nombreContacto:string;
-  numeroContacto: number;
+  nombreContacto: string;
+  numeroContacto: string;
   disponibilidades: Array<Disponibilidad>;
+  estado: boolean;
 
   constructor(
-    id: number,
+    id: string,
     nombre: string,
     tipoId: string,
-    numeroCelular: number,
+    numeroCelular: string,
     direccion: string,
     eps: string,
     arl: string,
     correoElectronico: string,
-    nombreContacto:string,
-    numeroContacto: number,
-    disponibilidades: Array<Disponibilidad>
-  )
-  {
+    nombreContacto: string,
+    numeroContacto: string,
+    disponibilidades: Array<Disponibilidad>,
+    estado: boolean = true
+  ) {
     this.id = id;
     this.nombre = nombre;
     this.tipoId = tipoId;
@@ -38,9 +39,15 @@ export class Profesor {
     this.nombreContacto = nombreContacto;
     this.numeroContacto = numeroContacto;
     this.disponibilidades = disponibilidades;
+    this.estado = estado;
   }
 
-  getDisponibilidades():string {
-    return this.disponibilidades?.map(disponibilidad => `${disponibilidad.diaDisponibilidad} ${disponibilidad.horaInicioDisponibilidad} - ${disponibilidad.horaFinDisponibilidad}`).join(' , ');
+  getDisponibilidades(): string {
+    return this.disponibilidades
+      ?.map(
+        (disponibilidad) =>
+          `${disponibilidad.diaDisponibilidad} ${disponibilidad.horaInicioDisponibilidad} - ${disponibilidad.horaFinDisponibilidad}`
+      )
+      .join(" , ");
   }
 }

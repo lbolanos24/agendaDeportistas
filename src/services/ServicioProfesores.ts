@@ -1,14 +1,15 @@
+import axios from "axios";
 import { Disponibilidad } from "../models/Disponibilidad";
 import { Profesor } from "../models/Profesor";
 
 export class ServicioProfesores {
   private profesores: Profesor[];
   private static instancia: ServicioProfesores;
+  private ruta: String;
 
   public static getInstancia(): ServicioProfesores {
     if (!this.instancia) {
       this.instancia = new ServicioProfesores();
-      this.instancia.obtenerProfesores();
     }
 
     return this.instancia;
@@ -16,27 +17,49 @@ export class ServicioProfesores {
 
   constructor() {
     this.profesores = [];
+    this.ruta = "http://localhost:8080/api/profesores/";
   }
 
   //funcion para cargar cursos Dummy
   public cargarDummy(): void {
-    this.profesores.push(new Profesor(1, "Jorge Castrillon","",3157895487,"","","","","",0,[new Disponibilidad("Lunes", 8,12), new Disponibilidad("Martes", 8, 12)]));
+    this.profesores.push(
+      new Profesor(
+        "1232313",
+        "Jorge Castrillon",
+        "",
+        "3157895487",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        [
+          new Disponibilidad(1, "Lunes", 8, 12),
+          new Disponibilidad(2, "Martes", 8, 12),
+        ]
+      )
+    );
   }
 
   //FUncion para obtener los cursos desde el backend
-  public obtenerProfesores(): void {
+  public async obtenerProfesores(): Promise<Profesor[]> {
     try {
-      //realizar llamado a servicio rest
-      /*const response = await fetch("http://localhost:3000/datos");
-      const datos = await response.json();
-      console.log(datos);
-      this.cursos = datos;*/
-
-      if (this.profesores.length === 0) {
+      /*if (this.profesores.length === 0) {
         this.cargarDummy();
-      }
+      }*/
+
+      // Realizar llamado a servicio rest
+      const response = await axios.get(this.ruta + "listar");
+
+      this.profesores = response.data;
+
+      return this.profesores;
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      throw new Error("Failed to fetch Profesores");
+    } finally {
+      console.log("finalizado obtener Profesores");
     }
   }
 
@@ -46,38 +69,42 @@ export class ServicioProfesores {
   }
 
   // Función para agregar un nuevo curso
-  public agregarCurso(profesor: Profesor): void {
+  public async crearProfesor(profesor: Profesor): Promise<Profesor> {
     try {
-      /*this.servicioBD.query(
-        "INSERT INTO cursos (identificacion, nombre, sexo, clasificacion_edad, edadInicial, nivel, subNivel, modalidad, categoria, duracion_clase_horas, duracion_clase_minutos, color) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
-        [
-          curso.id,
-          curso.nombre,
-          curso.sexo,
-          curso.clasificacionEdadInicial,
-          curso.edadInicial,
-          curso.nivel,
-          curso.subNivel,
-          curso.modalidad,
-          curso.categoria,
-          curso.duracionClaseHoras,
-          curso.duracionClaseMinutos,
-          curso.color,
-        ]
-      );*/
-      this.profesores.push(profesor);
+      const response = await axios.post<Profesor>(
+        this.ruta + "crear",
+        profesor
+      );
+      return response.data;
     } catch (error) {
       console.log(error);
+      throw new Error("Failed to create Profesor");
     }
   }
 
-  // Función para eliminar un curso existente
-  public eliminarProfesores(id: number): void {
-    this.profesores = this.profesores.filter((c) => c.id !== id);
+  public async actualizarProfesor(profesor: Profesor): Promise<Profesor> {
+    try {
+      const response = await axios.post<Profesor>(
+        this.ruta + "actualizar",
+        profesor
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw new Error("Failed to create Profesor");
+    }
   }
 
-  // Función para eliminar un curso existente
-  public obtenerSiguienteId(): number {
-    return this.profesores.length + 1;
+  // Función para eliminar una Profesor existente
+  public async eliminarProfesor(id: string): Promise<void> {
+    try {
+      //realizar llamado a servicio rest
+      await axios.delete(this.ruta + "eliminar/" + id);
+    } catch (error) {
+      console.error("ERROR al eliminar: " + error);
+      throw new Error("Failed to delete Profesor");
+    } finally {
+      console.log("finalizado eliminar Profesor");
+    }
   }
 }
