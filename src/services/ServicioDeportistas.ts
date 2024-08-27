@@ -255,4 +255,36 @@ export class ServicioDeportistas {
         ?.acudientes?.filter((c) => c.id !== id) || []
     );
   }
+
+  public async obtenerDeportistasId(id: string): Promise<Deportista> {
+    try {
+      //realizar llamado a servicio rest
+      const response = await axios.get(
+        this.ruta + "buscarIdentificacion/" + id
+      );
+
+      //console.log(JSON.stringify(response.data));
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to search deportistas");
+    } finally {
+      console.log("finalizado buscar deportistas");
+    }
+  }
+
+  public async obtenerDeportistasNombre(nombre: string): Promise<Deportista[]> {
+    try {
+      //realizar llamado a servicio rest
+      const response = await axios.get(this.ruta + "buscarNombre/" + nombre);
+
+      //console.log(JSON.stringify(response.data));
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to search deportistas");
+    } finally {
+      console.log("finalizado buscar deportistas");
+    }
+  }
 }

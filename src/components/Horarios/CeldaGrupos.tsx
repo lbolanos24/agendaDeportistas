@@ -1,6 +1,7 @@
 import { Box, Button, Grid, GridItem, HStack, Text } from "@chakra-ui/react";
 import { Grupo } from "../../models/Grupo";
 import { FaEye, FaTrash, FaAddressBook } from "react-icons/fa";
+import ServicioAgendas from "../../services/ServicioAgenda";
 
 // Función para calcular la luminosidad del color
 const getContrastYIQ = (hexcolor: string) => {
@@ -36,7 +37,7 @@ const CeldaGrupos = (props: Props) => {
 
   function obtenerInicialesONombreCurso(nombre: string): string {
     // Si el nombre tiene más de 20 caracteres
-    if (nombre.length > 20) {
+    if (nombre.length > 25) {
       // Dividir el nombre por espacios y tomar la primera letra de cada palabra
       const palabras = nombre.split(" ");
       const iniciales = palabras
@@ -70,19 +71,23 @@ const CeldaGrupos = (props: Props) => {
                 minWidth={"180px"}
                 bg={grupo.curso.color}
                 color={textColor}
+                title={grupo.curso.nombre}
               >
                 <Text
                   fontWeight="bold"
-                  fontSize="16px"
+                  fontSize="14px"
                   height={"20px"}
                   margin={0}
                   padding={0}
-                  title={grupo.curso.nombre}
                 >
                   {obtenerInicialesONombreCurso(grupo.curso.nombre)}
                 </Text>
-                <Text fontSize="12px" height={"18px"} margin={0} padding={0}>
-                  {grupo.cupos}/{grupo.cupos}
+                <Text fontSize="14px" height={"18px"} margin={0} padding={0}>
+                  {grupo.cupos -
+                    ServicioAgendas.getInstancia().obtenerAgendasGrupo(
+                      grupo.idGrupo
+                    )}
+                  /{grupo.cupos}
                 </Text>
                 <Text fontSize="12px" height={"18px"} margin={0} padding={0}>
                   {grupo.profesor.nombre}
@@ -97,6 +102,7 @@ const CeldaGrupos = (props: Props) => {
                     size="xs"
                     colorScheme="blue"
                     onClick={() => handlerAgendarGrupo(grupo)}
+                    title="Agendar deportista"
                   >
                     <FaAddressBook />
                   </Button>
@@ -104,6 +110,7 @@ const CeldaGrupos = (props: Props) => {
                     size="xs"
                     colorScheme="green"
                     onClick={() => handlerVerDetalleGrupo(grupo)}
+                    title="Ver detalle Grupo"
                   >
                     <FaEye />
                   </Button>
@@ -111,6 +118,7 @@ const CeldaGrupos = (props: Props) => {
                     size="xs"
                     colorScheme="red"
                     onClick={() => handlerEliminarGrupo(grupo.idGrupo)}
+                    title="Eliminar Grupo"
                   >
                     <FaTrash />
                   </Button>

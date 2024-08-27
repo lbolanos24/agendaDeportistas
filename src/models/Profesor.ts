@@ -12,6 +12,7 @@ export class Profesor {
   nombreContacto: string;
   numeroContacto: string;
   disponibilidades: Array<Disponibilidad>;
+  estado: boolean;
 
   constructor(
     id: string,
@@ -24,7 +25,8 @@ export class Profesor {
     correoElectronico: string,
     nombreContacto: string,
     numeroContacto: string,
-    disponibilidades: Array<Disponibilidad>
+    disponibilidades: Array<Disponibilidad>,
+    estado: boolean = true
   ) {
     this.id = id;
     this.nombre = nombre;
@@ -37,6 +39,7 @@ export class Profesor {
     this.nombreContacto = nombreContacto;
     this.numeroContacto = numeroContacto;
     this.disponibilidades = disponibilidades;
+    this.estado = estado;
   }
 
   getDisponibilidades(): string {

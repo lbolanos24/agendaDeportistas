@@ -1,3 +1,4 @@
+import { BiBold } from "react-icons/bi";
 import HamburgerIcon from "./HamburgerIcon";
 import {
   Menu,
@@ -27,7 +28,7 @@ function Encabezado(props: Props) {
 
   return (
     <>
-      <Flex bgGradient="linear(to-r,darkblue, blue.500)">
+      <Flex bgGradient="linear(to-r,darkblue, white)">
         <Center w="100px">
           <Menu>
             <MenuButton
@@ -49,14 +50,15 @@ function Encabezado(props: Props) {
         <Spacer />
         <Box p="2">
           <Text margin={"15px"} fontSize="40px" color="white" shadow={"revert"}>
-            Sistema de agendamiento de clases para deportistas
+            Sistema de Agendamiento de Clases.
           </Text>
         </Box>
         <Spacer />
         <Image
-          boxSize="60px"
-          m="20px 20px 20px 20px"
-          src={"/public/gimnasia-ritmica.png"}
+          width={"200px"}
+          height={"125px"}
+          m={"10px 10px 10px 10px"}
+          src={"/public/logoExploradores.png"}
           alt="Gimnasta"
         />
       </Flex>

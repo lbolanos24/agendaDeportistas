@@ -19,10 +19,14 @@ type Props = {
 
 function VerAcudientes(props: Props) {
   const handleClick = (id: string, isNew: boolean) => {
-    if (props.acudientes.length < 2) {
-      props.onClick(id, isNew);
+    if (isNew) {
+      if (props.acudientes.length < 2) {
+        props.onClick(id, isNew);
+      } else {
+        alert("Solo se puede agregar un máximo de 2 acudientes.");
+      }
     } else {
-      alert("Solo se puede agregar un máximo de 2 acudientes.");
+      props.onClick(id, isNew);
     }
   };
 

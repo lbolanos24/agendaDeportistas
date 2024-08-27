@@ -20,9 +20,8 @@ function App() {
     { id: 1, name: "Gestión de Cursos", page: "GestionCursos" },
     { id: 2, name: "Gestión de Profesores", page: "GestionProfesores" },
     { id: 3, name: "Gestión de Ubicaciones", page: "GestionUbicaciones" },
-    { id: 4, name: "Gestión de Grupos", page: "GestionGrupos" },
-    { id: 5, name: "Gestión Deportista", page: "Inscribir" },
-    { id: 6, name: "Agendar Clase", page: "Agendar" },
+    { id: 4, name: "Gestión Deportista", page: "Inscribir" },
+    { id: 5, name: "Agendamiento de Deportistas", page: "GestionGrupos" },
   ];
 
   const handlerSelected = (element: {
@@ -54,28 +53,33 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <div
-        style={{
-          backgroundColor: "#e0f2f1" /* Color de fondo */,
-          minHeight: "100vh", // Asegura que el fondo cubra toda la pantalla
-          fontFamily: "Arial, sans-serif", // Estilo de fuente opcional
-          padding: "2px", // Espacio opcional para el contenido
-        }}
-      >
+      <div>
         <Encabezado onClick={handlerSelected} data={opcionesMenu} />
-        {optionSelected.id === 1 ? (
-          <GestionCursos titulo={optionSelected.name} />
-        ) : optionSelected.id === 2 ? (
-          <GestionProfesores titulo={optionSelected.name} />
-        ) : optionSelected.id === 3 ? (
-          <GestionUbicaciones titulo={optionSelected.name} />
-        ) : optionSelected.id === 4 ? (
-          <GestionHorarios titulo={optionSelected.name} />
-        ) : optionSelected.id === 5 ? (
-          <GestionDeportistas titulo={optionSelected.name} />
-        ) : (
-          <Text>{optionSelected.page}</Text>
-        )}
+        <div
+          style={{
+            //backgroundColor: "#e0f2f1" /* Color de fondo */,
+            backgroundImage: "url('/fondo.png')",
+            backgroundSize: "cover", // Ajusta el tamaño de la imagen para cubrir todo el fondo
+            backgroundRepeat: "no-repeat", // Evita que la imagen se repita
+            minHeight: "100vh", // Asegura que el fondo cubra toda la pantalla
+            fontFamily: "Arial, sans-serif", // Estilo de fuente opcional
+            padding: "2px", // Espacio opcional para el contenido
+          }}
+        >
+          {optionSelected.id === 1 ? (
+            <GestionCursos titulo={optionSelected.name} />
+          ) : optionSelected.id === 2 ? (
+            <GestionProfesores titulo={optionSelected.name} />
+          ) : optionSelected.id === 3 ? (
+            <GestionUbicaciones titulo={optionSelected.name} />
+          ) : optionSelected.id === 4 ? (
+            <GestionDeportistas titulo={optionSelected.name} />
+          ) : optionSelected.id === 5 ? (
+            <GestionHorarios titulo={optionSelected.name} />
+          ) : (
+            <Text>{optionSelected.page}</Text>
+          )}
+        </div>
       </div>
     </ChakraProvider>
   );

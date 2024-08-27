@@ -23,6 +23,7 @@ import { Curso } from "../../models/Curso";
 import { ServicioCursos } from "../../services/ServicioCursos";
 import { ServicioProfesores } from "../../services/ServicioProfesores";
 import { ServicioUbicaciones } from "../../services/ServicioUbicaciones";
+import ServicioAgendas from "../../services/ServicioAgenda";
 
 type Props = {
   grupoSeleccionado: Grupo;
@@ -50,6 +51,7 @@ function EditarGrupo(props: Props) {
   const [habilitarHoraInicio, setHabilitarHoraInicio] = useState(true);
   const [errorDisponibilidad, setErrorDiponibilidad] = useState("");
   const [error, setError] = useState("");
+  const [isEditable, setIsEditable] = useState(true);
 
   const horas = [];
 
@@ -81,6 +83,21 @@ function EditarGrupo(props: Props) {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (props.grupoSeleccionado) {
+        await ServicioAgendas.getInstancia().obtenerAgendas();
+
+        const numAgendas = ServicioAgendas.getInstancia().obtenerAgendasGrupo(
+          props.grupoSeleccionado.idGrupo
+        );
+
+        setIsEditable(numAgendas === 0);
+      }
+    };
+    fetchData();
+  }, [props.isEditarGrupoOpen]);
 
   // Se carga los datos del Grupo seleccionado
   useEffect(() => {
@@ -252,7 +269,7 @@ function EditarGrupo(props: Props) {
                   <Select
                     value={curso?.idCurso}
                     placeholder="Seleccione el curso"
-                    isDisabled={!props.isNewElement}
+                    isDisabled={!props.isNewElement || !isEditable}
                     onChange={(e) => {
                       const selectedCurso =
                         cursos.find(
@@ -275,6 +292,7 @@ function EditarGrupo(props: Props) {
                   <Select
                     value={profesor?.id || ""}
                     placeholder="Seleccione el profesor"
+                    isDisabled={!isEditable}
                     onChange={(e) => {
                       const selectedProfesor =
                         profesores.find((u) => u.id === e.target.value) || null;
@@ -295,6 +313,7 @@ function EditarGrupo(props: Props) {
                   <Select
                     value={ubicacion?.nombre || ""}
                     placeholder="Seleccione la ubicación"
+                    isDisabled={!isEditable}
                     onChange={(e) => {
                       const selectedUbicacion =
                         ubicaciones.find((u) => u.nombre === e.target.value) ||
@@ -316,6 +335,7 @@ function EditarGrupo(props: Props) {
                   <Select
                     value={dia}
                     placeholder="Seleccione el día de la semana"
+                    isDisabled={!isEditable}
                     onChange={(e) => setDia(e.target.value)}
                   >
                     <option value="Lunes">Lunes</option>
@@ -335,7 +355,7 @@ function EditarGrupo(props: Props) {
                     value={horaInicio}
                     placeholder="Seleccione el hora de inicio"
                     onChange={handlerHoraIncioChange}
-                    isDisabled={habilitarHoraInicio}
+                    isDisabled={habilitarHoraInicio || !isEditable}
                   >
                     {horas.map((hora, index) => (
                       <option key={index} value={hora}>

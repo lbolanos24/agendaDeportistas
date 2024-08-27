@@ -8,9 +8,13 @@ import EditarGrupo from "./EditarGrupo";
 import { Curso } from "../../models/Curso";
 import { Profesor } from "../../models/Profesor";
 import { Ubicacion } from "../../models/Ubicacion";
+import AgendarClase from "./AgendarClase";
+import ServicioAgendas from "../../services/ServicioAgenda";
+import { Agenda } from "../../models/Agenda";
 
 function VerGrupos() {
   const [grupos, setGrupos] = useState<Grupo[]>([]);
+  const [agendas, setAgendas] = useState<Agenda[]>([]);
   const [isOpenEditarGrupos, setIsOpenEditarGrupos] = useState(false);
   const [errorGrupos, setErrorGrupo] = useState("");
   const [isNewGrupo, setIsNewGrupo] = useState(false);
@@ -26,6 +30,7 @@ function VerGrupos() {
       new Ubicacion(0, "", "", "", "", false, new Date(), new Date(), [])
     )
   );
+  const [isEditarAgendaOpen, setIsEditarAgendaOpen] = useState(false);
 
   const dias = [
     "Lunes",
@@ -51,6 +56,11 @@ function VerGrupos() {
       try {
         const data = await ServicioGrupos.getInstancia().obtenerGrupos();
         setGrupos(data);
+
+        // Obtener las agendas para mostrar en la tabla
+        const data2 = await ServicioAgendas.getInstancia().obtenerAgendas();
+        setAgendas(data2);
+
         //setGrupos(ServicioGrupos.getInstancia().listarGrupos());
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -158,6 +168,8 @@ function VerGrupos() {
 
   function handleAgendarGrupoClick(grupo: Grupo): void {
     console.log("Agregando agenda");
+    setGrupoSeleccionado(grupo);
+    setIsEditarAgendaOpen(true);
   }
 
   function handleVerGrupoClick(grupo: Grupo): void {
@@ -168,8 +180,16 @@ function VerGrupos() {
   }
 
   async function handleEliminarGrupoClick(idGrupo: number): Promise<void> {
-    await ServicioGrupos.getInstancia().eliminarGrupo(idGrupo);
-    setGrupos(ServicioGrupos.getInstancia().listarGrupos());
+    const numAgendas =
+      ServicioAgendas.getInstancia().obtenerAgendasGrupo(idGrupo);
+
+    if (numAgendas > 0) {
+      alert("No se puede eliminar un grupo que tiene deportistas agendados");
+      return;
+    } else {
+      await ServicioGrupos.getInstancia().eliminarGrupo(idGrupo);
+      setGrupos(ServicioGrupos.getInstancia().listarGrupos());
+    }
   }
 
   return (
@@ -181,6 +201,12 @@ function VerGrupos() {
         idProximoGrupo={grupos.length + 1}
         isNewElement={isNewGrupo}
         onSave={handleSaveGrupo}
+        grupoSeleccionado={grupoSeleccionado}
+      />
+      <AgendarClase
+        isEditarAgendaOpen={isEditarAgendaOpen}
+        onClose={() => setIsEditarAgendaOpen(false)}
+        idProximaAgenda={agendas.length + 1}
         grupoSeleccionado={grupoSeleccionado}
       />
       <Button
